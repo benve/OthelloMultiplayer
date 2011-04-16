@@ -7,7 +7,7 @@ package com.github.benve.othellomultiplayer;
 import java.util.UUID;
 /**
  *
- * @author ledonne
+ * @author Gabriele Ledonne
  */
 public class Player implements PlayerInterface{
       private String p_name;

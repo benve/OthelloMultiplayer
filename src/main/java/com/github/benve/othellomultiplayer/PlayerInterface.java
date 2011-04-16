@@ -7,7 +7,7 @@ package com.github.benve.othellomultiplayer;
 
 /**
  *
- * @author ledonne
+ * @author Gabriele Ledonne
  */
 public interface PlayerInterface {
     public String getName();
