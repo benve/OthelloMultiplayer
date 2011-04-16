@@ -23,10 +23,10 @@ public class Player implements PlayerInterface{
       }
 
       public Player(String name,String url,String port){
-          p_name = new String(name);
+          p_name = name;
           p_uuid = UUID.randomUUID();
-          p_url = new String(url);
-          p_port = new String(url);
+          p_url = url;
+          p_port = url;
       }
 
       public String getName(){
