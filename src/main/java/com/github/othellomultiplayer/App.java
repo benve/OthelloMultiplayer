@@ -1,4 +1,4 @@
-package com.github.benve.othellomultiplayer;
+package com.github.othellomultiplayer;
 
 /**
  * Hello world!
