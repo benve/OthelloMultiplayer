@@ -26,7 +26,7 @@ public class Player implements PlayerInterface{
           p_name = name;
           p_uuid = UUID.randomUUID();
           p_url = url;
-          p_port = url;
+          p_port = port;
       }
 
       public String getName(){
