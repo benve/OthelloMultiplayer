@@ -32,6 +32,10 @@ public class Node implements RemoteNode {
 
     }
 
+    public void prova(String s) throws RemoteException {
+        next.msg(s);
+    }
+
 
     public void msg(String s) {
         System.out.println(s);
