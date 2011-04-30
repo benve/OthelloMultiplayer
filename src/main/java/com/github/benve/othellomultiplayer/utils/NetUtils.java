@@ -32,5 +32,14 @@ public class NetUtils {
         return null;
     }
 
+    /**
+     * Ritorna un indirizzo ip pubblico della macchina
+     * @return un indirizzo pubblico della macchina, null ne la macchina non ne ha
+     * @throws UnknownHostException
+     */
+    public static String getHostAddress() throws UnknownHostException {
+        return NetUtils.getPublicIP().getHostAddress();
+    }
+
 
 }
