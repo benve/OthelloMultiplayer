@@ -21,6 +21,8 @@ public class Node implements RemoteNode {
 
     public final int port;
 
+    public int getPort() { return this.port; }
+
     //ID univoco del nodo
     public static final UUID uuid = UUID.randomUUID();
 

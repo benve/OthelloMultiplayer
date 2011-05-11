@@ -9,40 +9,40 @@ import java.util.UUID;
  */
 public class Board {
 
-    UUID [][] board;
+    public int [][] board;
     int height;
     int width;
     
     public Board(){
-        board = new UUID[10][10];
+        board = new int[10][10];
         height = 10;
         width = 10;
         for(int i=0;i<10;i++)
             for(int j=0;j<10;j++)
-                board[i][j] = null;
+                board[i][j] = -1;
     }
             
     public Board(int x, int y){
         width = x;
         height = y;
-        board = new UUID[x][y];
+        board = new int[x][y];
         for(int i=0;i<x;i++)
             for(int j=0;j<y;j++)
-                board[i][j] = null;        
+                board[i][j] = -1;
     }
     
-    public UUID getStatus(int x,int y){
+    public int getStatus(int x,int y){
         return board[x][y];
     }
     
-    public void setStatus(int x, int y, UUID playerID){
+    public void setStatus(int x, int y, int playerID){
         board[x][y] = playerID;
     }
     
 
-    public boolean compareStatus(int x,int y, UUID playerID){
+    public boolean compareStatus(int x,int y, int playerID){
         boolean result = true;
-        if (playerID.compareTo(board[x][y]) !=0)
+        if (playerID != board[x][y])
             result = false;
         return result;
     }
@@ -53,11 +53,11 @@ public class Board {
      * a una delle pedine del giocatore
      */
 
-    public boolean canColonize(int x1, int y1, UUID currPlayer){
+    public boolean canColonize(int x1, int y1, int currPlayer){
         boolean result = true;
         int hi,hj,wi,wj,pedine;
         pedine = 0;
-        if(this.getStatus(x1, y1) == null){
+        if(this.getStatus(x1, y1) == -1){
             if(x1==0){
                 hi = 0;hj= x1+1;
             }else if(x1==this.height-1){
@@ -76,7 +76,7 @@ public class Board {
             
             for(int i = hi;i<= hj; i++)
                 for(int j = wi; j<=wj; j++){
-                   if(this.board[i][j] != null && currPlayer.toString().equals((this.board[i][j]).toString()))
+                   if(this.board[i][j] != -1 && currPlayer == this.board[i][j])
                        pedine++;
                 }
             if(pedine==0)
@@ -90,7 +90,7 @@ public class Board {
     }
 
     /*
-     * getSingleReversi: prende in input una coordinata e lo UUID del giocatore e una
+     * getSingleReversi: prende in input una coordinata e lo int del giocatore e una
      * matrice sulla quale verranno salvate le pedine che posso mangiare con quella mossa.
      *
      * Es.
@@ -112,7 +112,7 @@ public class Board {
      *
      */
 
-    public void getSingleReversi(int x1, int y1, UUID currPlayer, int[][] mosseReversi){
+    public void getSingleReversi(int x1, int y1, int currPlayer, int[][] mosseReversi){
         //int[][] mosseReversi = new int[height][width];
         int i,j,dist;
         boolean find;
@@ -123,7 +123,7 @@ public class Board {
         
         mosseReversi[x1][y1] = 0;
 
-        if(board[x1][y1] != null)
+        if(board[x1][y1] != -1)
             return;
 
         //nord: y fissa x decrescente da x1-1 a 0
@@ -131,8 +131,8 @@ public class Board {
         dist = 0;
 
         for(i=x1-1;i>=0;i--)
-            if(board[i][y1] != null){
-                if(board[i][y1].compareTo(currPlayer) != 0){
+            if(board[i][y1] != -1){
+                if(board[i][y1] != currPlayer){
                     dist++;find = false;
                 }else{
                     find = true;break;
@@ -151,8 +151,8 @@ public class Board {
         dist = 0;
 
         for(i=x1+1;i<height;i++)
-            if(board[i][y1] != null){
-                if(board[i][y1].compareTo(currPlayer) != 0){
+            if(board[i][y1] != -1){
+                if(board[i][y1] != currPlayer){
                     dist++;find = false;
                 }else{
                     find = true;break;
@@ -171,8 +171,8 @@ public class Board {
         find = false;
         dist = 0;
         for(i=y1+1;i<width;i++)
-            if(board[x1][i] != null){
-                if(board[x1][i].compareTo(currPlayer) != 0){
+            if(board[x1][i] != -1){
+                if(board[x1][i] != currPlayer){
                     find = false;dist++;
                 }
                 else{
@@ -192,8 +192,8 @@ public class Board {
         find = false;
         dist = 0;
         for(i=y1-1;i>=0;i--)
-            if(board[x1][i] != null){
-                if(board[x1][i].compareTo(currPlayer) != 0){
+            if(board[x1][i] != -1){
+                if(board[x1][i] != currPlayer){
                     find = false;dist++;
                 }
                 else{
@@ -215,8 +215,8 @@ public class Board {
         i = x1-1; j = y1+1;
         
         while(i>=0 && j < width){
-            if(board[i][j] != null){
-                if(board[i][j].compareTo(currPlayer) != 0){
+            if(board[i][j] != -1){
+                if(board[i][j] != currPlayer){
                     find = false;dist++;
                     i--;j++;
                 }
@@ -240,8 +240,8 @@ public class Board {
 
         i = x1+1; j = y1+1;
         while(i<height && j < width){
-            if(board[i][j] != null){
-                if(board[i][j].compareTo(currPlayer) != 0){
+            if(board[i][j] != -1){
+                if(board[i][j] != currPlayer){
                     find = false;dist++;
                     i++;j++;
                 }
@@ -264,8 +264,8 @@ public class Board {
 
         i = x1+1; j = y1-1;
         while(i<height && j >= 0){
-            if(board[i][j] != null){
-                if(board[i][j].compareTo(currPlayer) != 0){
+            if(board[i][j] != -1){
+                if(board[i][j] != currPlayer){
                     find = false;dist++;
                     i++;j--;
                 }
@@ -288,8 +288,8 @@ public class Board {
 
         i = x1-1; j = y1-1;
         while(i >= 0 && j >= 0){
-            if(board[i][j] != null){
-                if(board[i][j].compareTo(currPlayer) != 0){
+            if(board[i][j] != -1){
+                if(board[i][j] != currPlayer){
                     find = false;dist++;
                     i--;j--;
                 }
@@ -311,17 +311,17 @@ public class Board {
 
 
     /*
-     * hasReversi: Prende in input lo UUID del giocatore e ritorna un booleano che indica se sulla tavolozza
+     * hasReversi: Prende in input lo int del giocatore e ritorna un booleano che indica se sulla tavolozza
      * e' possibile effettuare una mossa di reversi. Viene effettuata una scansione delle caselle vuote della
      * tavolozza e in corrispondenza anche di una sola mossa di reversi viene ritornato true;
      * */
 
-    public boolean hasReversi(UUID currentPlayer){
+    public boolean hasReversi(int currentPlayer){
         boolean result = false;
         int [][] reversi = new int[height][width];
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
-                if(this.board[i][j] == null){
+                if(this.board[i][j] == -1){
                     this.getSingleReversi(i, j, currentPlayer, reversi);
                     if(this.canReversi(reversi)){
                         result = true;
@@ -337,7 +337,7 @@ public class Board {
 
 
     /*
-     * getAllReversi:: Prend in input lo UUID del giocatore e ritrona una matrice all'interno della quale
+     * getAllReversi:: Prend in input lo int del giocatore e ritrona una matrice all'interno della quale
      * e' presente la mappa di tutte le possibili caselle sulle quali il giocatore puo' effettuare una mossa
      * di reversi.
      *
@@ -347,12 +347,12 @@ public class Board {
      *
      */
 
-    public void getAllReversi(int[][] mosseReversi, UUID currPlayer){
+    public void getAllReversi(int[][] mosseReversi, int currPlayer){
         int[][] caselleMossa = new int[height][width];
 
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
-                if(this.board[i][j] == null){
+                if(this.board[i][j] == -1){
                     this.getSingleReversi(i, j, currPlayer, caselleMossa);
                     if(this.canReversi(caselleMossa)){
                         mosseReversi[i][j] = 0;
@@ -383,7 +383,7 @@ public class Board {
      *  moveReversi: metodo che data la matrice di una mossa e il giocatore che deve giocare cambia lo
      *  stato della tavolozza mettendo i nuovi valori alle caselle corrette. 
      */
-    public void moveReversi(int[][] mossaReversi, UUID currentPlayer){
+    public void moveReversi(int[][] mossaReversi, int currentPlayer){
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
                 if(mossaReversi[i][j] != -1){
@@ -392,7 +392,7 @@ public class Board {
             }
     }
 
-    public void colonizeField(int x1, int y1, UUID currenPlayer){
+    public void colonizeField(int x1, int y1, int currenPlayer){
         int[][] mossaColonizza = new int[height][width];
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++)
@@ -401,7 +401,7 @@ public class Board {
         this.moveReversi(mossaColonizza, currenPlayer);
     }
 
-   public boolean hasColonize(UUID currentPlayer){
+   public boolean hasColonize(int currentPlayer){
        boolean result = false;
        for(int i=0;i<height;i++)
            for(int j=0;j<width;j++)
@@ -413,7 +413,7 @@ public class Board {
        return result;
    }
 
-   public void getAllColonize(int[][] allColonize,UUID currentPlayer){
+   public void getAllColonize(int[][] allColonize,int currentPlayer){
        for(int i=0;i<height;i++)
            for(int j=0;j<width;j++)
                if(this.canColonize(i, j, currentPlayer))
@@ -428,8 +428,8 @@ public class Board {
             System.out.print("|");
             for(int j=0;j<width;j++){
                 System.out.flush();
-                if(board[i][j]!= null)
-                   System.out.print(board[i][j].toString().charAt(0) +"|");
+                if(board[i][j]!= -1)
+                   System.out.print(board[i][j]+"|");
                 else
                     System.out.print(" |");
             }
