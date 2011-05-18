@@ -101,10 +101,10 @@ public class Board {
      *
      * Matrice risultato
      * <pre>
-     * -1 -1 -1 -1
-     * -1 -1 -1 -1
-     * -1 -1 0 -1
-     * -1 -1- -1 0
+     * f f f f
+     * f f f f
+     * f f t f
+     * f f f t
      * </pre>
      *
      */
@@ -322,8 +322,7 @@ public class Board {
                     reversi = this.getSingleReversi(i, j, currentPlayer);
                     if(this.canReversi(reversi)){
                         result = true;
-                        break;
-                        //return result;
+                        return result;
                     }
                 }
             }
@@ -338,8 +337,8 @@ public class Board {
      * di reversi.
      *
      * il significato dei valori della matrice e' il seguente
-     *  0       Sulla casella e' possibile una mossa di reversi valida
-     *  -1      Sulla casella non e' possibile effettuare una mossa di reversi
+     *  true       Sulla casella e' possibile una mossa di reversi valida
+     *  false      Sulla casella non e' possibile effettuare una mossa di reversi
      *
      */
 
@@ -430,6 +429,11 @@ public class Board {
         }
     }
 
+
+    /*
+    Si effettua una valutazione cortocircuitata dell'or sulla matrice in modo tale che alla prima
+    occorrenza di un true la funzione possa terminare la valutazione
+     */
     private boolean orMatrice(boolean[][] mossa){
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++)
