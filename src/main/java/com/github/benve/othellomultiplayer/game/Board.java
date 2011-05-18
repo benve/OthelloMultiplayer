@@ -424,7 +424,7 @@ public class Board {
                 if(board[i][j]!= -1)
                    System.out.print(board[i][j]+"|");
                 else
-                    System.out.print(" |");
+                   System.out.print(" |");
             }
             System.out.print("\n");
         }
