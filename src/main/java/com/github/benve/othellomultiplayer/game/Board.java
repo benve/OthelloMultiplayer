@@ -1,8 +1,5 @@
 package com.github.benve.othellomultiplayer.game;
 
-import java.util.UUID;
-
-
 /**
  *
  * @author lemad85
@@ -112,19 +109,19 @@ public class Board {
      *
      */
 
-    public void getSingleReversi(int x1, int y1, int currPlayer, int[][] mosseReversi){
-        //int[][] mosseReversi = new int[height][width];
+    public boolean[][] getSingleReversi(int x1, int y1, int currPlayer){
+        boolean[][] mosseReversi = new boolean[height][width];
         int i,j,dist;
         boolean find;
         
         for(i=0;i<height;i++)
             for(j=0;j<width;j++)
-                mosseReversi[i][j] = -1;
+                mosseReversi[i][j] = false;
         
-        mosseReversi[x1][y1] = 0;
+        mosseReversi[x1][y1] = true;
 
         if(board[x1][y1] != -1)
-            return;
+            return mosseReversi;
 
         //nord: y fissa x decrescente da x1-1 a 0
         find = false;
@@ -144,7 +141,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1] = 0;
+                mosseReversi[x1-1-i][y1] = true;
 
         //sud: y fissa x cresente da x1+1 a height-1
         find = false;
@@ -164,7 +161,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1] = 0;
+                mosseReversi[x1+1+i][y1] = true;
 
         //est: x fissa y crescente da y1+1 a width-1
 
@@ -185,7 +182,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1][y1+1+i] = 0;
+                mosseReversi[x1][y1+1+i] = true;
 
         //ovest: x fissa y decrescente da y1-1 a 0
 
@@ -206,7 +203,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1][y1-1-i] = 0;
+                mosseReversi[x1][y1-1-i] = true;
         
         //nord-est: x decrescente da x1-1 a 0 y crescente da y1+1 a width-1
         find=false;
@@ -221,7 +218,7 @@ public class Board {
                     i--;j++;
                 }
                 else{
-                    find = true;System.out.println("nord-est");break;
+                    find = true;break;
                 }
             }else{
                 dist = 0; find = false;
@@ -231,7 +228,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1+1+i] = 0;
+                mosseReversi[x1-1-i][y1+1+i] = true;
 
 
         //sud-est: x crescente da x1+1 a height-1 y crescente da y1+1 a width-1
@@ -246,7 +243,7 @@ public class Board {
                     i++;j++;
                 }
                 else{
-                    find = true;System.out.println("sud-est");break;
+                    find = true;break;
                 }
             }else{
                 dist = 0; find = false;
@@ -256,7 +253,7 @@ public class Board {
         
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1+1+i] = 0;
+                mosseReversi[x1+1+i][y1+1+i] = true;
      
         //sud-ovest: x crescente da x1+1 a height-1 y decrescente da y1-1 a 0
         find=false;
@@ -270,7 +267,7 @@ public class Board {
                     i++;j--;
                 }
                 else{
-                    find = true;System.out.println("sud-ovest");break;
+                    find = true;break;
                 }
             }else{
                 dist = 0; find = false;
@@ -280,7 +277,7 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1-1-i] = 0;
+                mosseReversi[x1+1+i][y1-1-i] = true;
 
         //nord-ovest: x decrescente da x1-1 a 0 y decrescente da y1-1 a 0
         find=false;
@@ -294,7 +291,7 @@ public class Board {
                     i--;j--;
                 }
                 else{
-                    find = true;System.out.println("nord-ovest");break;
+                    find = true;break;
                 }
             }else{
                 dist = 0; find = false;
@@ -304,9 +301,9 @@ public class Board {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1-1-i] = 0;
+                mosseReversi[x1-1-i][y1-1-i] = true;
      
-        return;
+        return mosseReversi;
     }
 
 
@@ -318,14 +315,13 @@ public class Board {
 
     public boolean hasReversi(int currentPlayer){
         boolean result = false;
-        int [][] reversi = new int[height][width];
+        boolean [][] reversi = new boolean[height][width];
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
                 if(this.board[i][j] == -1){
-                    this.getSingleReversi(i, j, currentPlayer, reversi);
+                    reversi = this.getSingleReversi(i, j, currentPlayer);
                     if(this.canReversi(reversi)){
                         result = true;
-                        System.out.println("x: "+i+" y: "+j);
                         break;
                         //return result;
                     }
@@ -347,20 +343,20 @@ public class Board {
      *
      */
 
-    public void getAllReversi(int[][] mosseReversi, int currPlayer){
-        int[][] caselleMossa = new int[height][width];
-
+    public boolean[][] getAllReversi(int currPlayer){
+        boolean[][] mosseReversi = new boolean[height][width];
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
                 if(this.board[i][j] == -1){
-                    this.getSingleReversi(i, j, currPlayer, caselleMossa);
-                    if(this.canReversi(caselleMossa)){
-                        mosseReversi[i][j] = 0;
+                    if(this.canReversi(this.getSingleReversi(i, j, currPlayer))){
+                        mosseReversi[i][j] = true;
                     }else
-                        mosseReversi[i][j] = -1;
+                        mosseReversi[i][j] = false;
                 }else
-                    mosseReversi[i][j] = -1;
+                    mosseReversi[i][j] = false;
             }
+
+        return mosseReversi;
     }
 
     /*
@@ -369,9 +365,9 @@ public class Board {
      * 
      */
 
-    public boolean canReversi(int[][] mossaReversi){
+    public boolean canReversi(boolean[][] mossaReversi){
         boolean result;
-        if(this.sommatoria(mossaReversi) > ((height*width*-1)+1))
+        if(this.orMatrice(mossaReversi))
             result = true;
         else
             result = false;
@@ -383,22 +379,17 @@ public class Board {
      *  moveReversi: metodo che data la matrice di una mossa e il giocatore che deve giocare cambia lo
      *  stato della tavolozza mettendo i nuovi valori alle caselle corrette. 
      */
-    public void moveReversi(int[][] mossaReversi, int currentPlayer){
+    public void moveReversi(boolean[][] mossaReversi, int currentPlayer){
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++){
-                if(mossaReversi[i][j] != -1){
+                if(mossaReversi[i][j]){
                     this.setStatus(i, j, currentPlayer);
                 }
             }
     }
 
     public void colonizeField(int x1, int y1, int currenPlayer){
-        int[][] mossaColonizza = new int[height][width];
-        for(int i=0;i<height;i++)
-            for(int j=0;j<width;j++)
-                mossaColonizza[i][j] = -1;
-        mossaColonizza[x1][y1] = 0;
-        this.moveReversi(mossaColonizza, currenPlayer);
+        this.setStatus(x1,y1,currenPlayer);
     }
 
    public boolean hasColonize(int currentPlayer){
@@ -407,19 +398,21 @@ public class Board {
            for(int j=0;j<width;j++)
                if(this.canColonize(i, j, currentPlayer)){
                         result = true;
-                        System.out.println("x: "+i+" y: "+j);
                         break;
                }
        return result;
    }
 
-   public void getAllColonize(int[][] allColonize,int currentPlayer){
+   public boolean[][] getAllColonize(int currentPlayer){
+       boolean[][] allColonize = new boolean[height][width];
        for(int i=0;i<height;i++)
            for(int j=0;j<width;j++)
                if(this.canColonize(i, j, currentPlayer))
-                   allColonize[i][j] = 0;
+                   allColonize[i][j] = true;
                else
-                   allColonize[i][j] = -1;                   
+                   allColonize[i][j] = false;
+
+       return allColonize;
    }
 
    public void printBoard(){
@@ -437,11 +430,11 @@ public class Board {
         }
     }
 
-    private int sommatoria(int[][] mossa){
-        int total = 0;
+    private boolean orMatrice(boolean[][] mossa){
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++)
-                total += mossa[i][j];
-        return total;
+                if(mossa[i][j])
+                    return true;
+        return false;
     }
 }
