@@ -1,44 +1,36 @@
 package com.github.benve.othellomultiplayer.network;
 
+import com.github.benve.othellomultiplayer.game.Player;
+
+import javax.xml.transform.Source;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.UUID;
 
 /**
  *
  * @author Giacomo Benvenuti
  */
-public class Node implements RemoteNode {
+public class Node implements RemoteNode, Serializable {
 
     //Nodo successivo nella rete
     private RemoteNode next;
 
     private Registry registry;
 
+    private Registration reg = null;
+
     public final int port;
 
     public int getPort() { return this.port; }
 
-    //ID univoco del nodo
-    public static final UUID uuid = UUID.randomUUID();
-
-    public void setNext(String nextIP, int nextPort) throws RemoteException, NotBoundException {
-        // http://java.sun.com/docs/books/tutorial/rmi/overview.html
-        Registry registry = LocateRegistry.getRegistry(nextIP, nextPort);
-        this.next = (RemoteNode) registry.lookup("Node");
-    }
-
-    public RemoteRegistration getRegistration(String rhost, int rport) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(rhost, rport);
-        RemoteRegistration reg = (RemoteRegistration) registry.lookup("Reg");
-        return reg;
-    }
-
-    /**
+        /**
      * Creo un server su una porta libera
      * @throws IOException
      * @throws AlreadyBoundException
@@ -66,17 +58,13 @@ public class Node implements RemoteNode {
         this.port = lport;
     }
 
-    /**
-     * Crea il servizio di registrazione e lo mette in ascolto
-     * @param maxplayer
-     * @throws RemoteException
-     * @throws AlreadyBoundException
-     */
-    public RemoteRegistration initRegistration(int maxplayer) throws RemoteException, AlreadyBoundException, MaxPlayerException {
-        Registration reg = new Registration(maxplayer);
-        this.registry.bind("Reg", reg);
+    //ID univoco del nodo
+    public static final UUID uuid = UUID.randomUUID();
 
-        return reg;
+    public void setNext(String nextIP, int nextPort) throws RemoteException, NotBoundException {
+        // http://java.sun.com/docs/books/tutorial/rmi/overview.html
+        Registry registry = LocateRegistry.getRegistry(nextIP, nextPort);
+        this.next = (RemoteNode) registry.lookup("Node");
     }
 
     private void initServer(int lport) throws RemoteException, AlreadyBoundException {
@@ -91,12 +79,32 @@ public class Node implements RemoteNode {
         next.msg(s);
     }
 
-
+    @Override
     public void msg(String s) {
         System.out.println(s);
 
     }
 
+    public void initReg(int maxplayer) {
+        this.reg = new Registration(maxplayer);
+    }
+
+    @Override
+    public List<Player> register(Player pplay) throws RemoteException, MaxPlayerException {
+        if (reg != null) {
+            return reg.register(pplay);
+        } else if(next != null) {
+            return next.register(pplay);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Player> getPlayerList() throws RemoteException {
+        assert (reg != null);
+        return reg.getPlayerList();
+    }
 
 
 }

@@ -1,59 +1,69 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.benve</groupId>
-  <artifactId>OthelloMultiplayer</artifactId>
-  <version>0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>com.github.benve</groupId>
+    <artifactId>OthelloMultiplayer</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>OthelloMultiplayer</name>
-  <url>http://maven.apache.org</url>
+    <name>OthelloMultiplayer</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-                <dependency>
-                        <groupId>org.processing</groupId>
-                        <artifactId>processing-core</artifactId>
-                        <version>1.2.1</version>
-                </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>processing-core</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-<build>
-<plugins>
- <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-install-plugin</artifactId>
-                                <executions>
-                                        <execution>
-                                                <id>hack-processing</id>
-                                                <phase>validate</phase>
-                                                <configuration>
-                                                        <groupId>org.processing</groupId>
-                                                        <artifactId>processing-core</artifactId>
-                                                        <version>1.2.1</version>
-                                                        <file>${basedir}/lib/core.jar</file>
-                                                        <repositoryLayout>default</repositoryLayout>
-                                                        <packaging>jar</packaging>
-                                                        <generatePom>true</generatePom>
-                                                </configuration>
-                                                <goals>
-                                                        <goal>install-file</goal>
-                                                </goals>
-                                        </execution>
-				</executions>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
 
-</plugin>
-</plugins>
-</build>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>hack-processing</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.processing</groupId>
+                            <artifactId>processing-core</artifactId>
+                            <version>1.2.1</version>
+                            <file>${basedir}/lib/core.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

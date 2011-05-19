@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author ledonne
  */
-public class Registration extends UnicastRemoteObject implements RemoteRegistration {
+public class Registration {
 
     /**
      * Contiene i giocatori registrati
@@ -24,11 +24,11 @@ public class Registration extends UnicastRemoteObject implements RemoteRegistrat
      */
     private int maxplayer = 4;
 
-    public Registration() throws RemoteException {
+    public Registration() {
         plist = new ArrayList();
     }
 
-    public Registration(int maxplayer) throws RemoteException {
+    public Registration(int maxplayer) {
         plist = new ArrayList();
         this.maxplayer = maxplayer;
     }
@@ -41,7 +41,7 @@ public class Registration extends UnicastRemoteObject implements RemoteRegistrat
      * @throws RemoteException
      * @throws MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
      */
-    public List<Player> register(Player pplay) throws RemoteException, MaxPlayerException {
+    public List<Player> register(Player pplay) throws MaxPlayerException {
 
         if (plist.size() >= maxplayer) throw new MaxPlayerException("Numero massimo di giocatori raggiunto");
 
@@ -58,7 +58,7 @@ public class Registration extends UnicastRemoteObject implements RemoteRegistrat
         return plist;
     }
 
-    public List<Player> getPlayerList() throws RemoteException {
+    public List<Player> getPlayerList() {
         return plist;
     }
 
