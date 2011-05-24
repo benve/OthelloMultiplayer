@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  * Time: 11.24
  * To change this template use File | Settings | File Templates.
  */
-public interface g_Node_Remote extends Remote {
+public interface NodeRemote extends Remote {
 
     void initializeNode(boolean server) throws RemoteException, AlreadyBoundException;
 

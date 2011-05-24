@@ -1,7 +1,6 @@
 package com.github.benve.othellomultiplayer.network;
 
-import com.github.benve.othellomultiplayer.game.g_Player;
-import com.sun.org.apache.xpath.internal.operations.Mult;
+import com.github.benve.othellomultiplayer.game.Player;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -21,22 +20,22 @@ import java.util.List;
  * Time: 10.51
  * To change this template use File | Settings | File Templates.
  */
-public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
+public class Node extends UnicastRemoteObject implements NodeRemote {
 
-    private g_Player me;
+    private Player me;
     private Registry registry;
-    public List<g_Player> allPlayer;
+    public List<Player> allPlayer;
     private int maxplayer;
-    private g_Registration reg1;
+    private Registration reg1;
 
-    public g_Node(int n_port) throws RemoteException, AlreadyBoundException {
+    public Node(int n_port) throws RemoteException, AlreadyBoundException {
         super();
-        me = new g_Player(n_port);
-        allPlayer = new ArrayList<g_Player>();
+        me = new Player(n_port);
+        allPlayer = new ArrayList<Player>();
         maxplayer = 3;
     }
 
-    public g_Node(String Name) throws IOException {
+    public Node(String Name) throws IOException {
         super();
         ServerSocket ss = new ServerSocket(0);
         int freeport = ss.getLocalPort();
@@ -44,22 +43,22 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
 
         System.out.println("porta:"+freeport);
 
-        me = new g_Player(Name,"localhost",freeport);
-        allPlayer = new ArrayList<g_Player>();
+        me = new Player(Name,"localhost",freeport);
+        allPlayer = new ArrayList<Player>();
         maxplayer = 4;
     }
 
-    public g_Node(int n_port,int n_player) throws RemoteException, AlreadyBoundException {
+    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException {
         super();
-        me = new g_Player(n_port);
-        allPlayer = new ArrayList<g_Player>();
+        me = new Player(n_port);
+        allPlayer = new ArrayList<Player>();
         maxplayer = n_player;
     }
 
-    public g_Node(String Name, int port, int n_player) throws IOException {
+    public Node(String Name, int port, int n_player) throws IOException {
         super();
-        me = new g_Player(Name,"localhost",port);
-        allPlayer = new ArrayList<g_Player>();
+        me = new Player(Name,"localhost",port);
+        allPlayer = new ArrayList<Player>();
         maxplayer = n_player;
     }
 
@@ -74,7 +73,7 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
         Registry register;
         register = LocateRegistry.createRegistry(this.me.getPort());
         this.registry = register;
-        this.registry.bind("g_Node",this);
+        this.registry.bind("Node",this);
 
         if(server)
             this.setRegister();
@@ -82,7 +81,7 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
     }
 
     private void setRegister() throws RemoteException, AlreadyBoundException {
-        reg1 = new g_Registration(me.getPort(),this.maxplayer);
+        reg1 = new Registration(me.getPort(),this.maxplayer);
         reg1.instaceRegistration();
     }
 
@@ -103,7 +102,7 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
 
         Registry register = LocateRegistry.getRegistry(regPort);
         this.registry = register;
-        g_Registration_Remote r_reg =  (g_Registration_Remote) this.registry.lookup("g_Reg");
+        RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
         r_reg.register(this.me);
         this.allPlayer = r_reg.getPlayerList();
@@ -129,8 +128,8 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
 
         Registry register = LocateRegistry.getRegistry(allPlayer.get((position+1)%maxplayer).getPort());
 
-        g_Node_Remote gRem = (g_Node_Remote) register.lookup("g_Node");
-        return gRem.replyForIp();
+        NodeRemote rem = (NodeRemote) register.lookup("Node");
+        return rem.replyForIp();
 
 
     }

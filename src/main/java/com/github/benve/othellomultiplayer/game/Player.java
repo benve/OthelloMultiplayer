@@ -12,7 +12,7 @@ import java.util.UUID;
  * Realizzazione della comunicazione attraverso una nuova struttura di classi di comunicazione (ma con logica
  * sostanzialmente uguale)
  */
-public class g_Player implements Serializable{
+public class Player implements Serializable{
     private String p_name;
 
     private int port;
@@ -21,19 +21,19 @@ public class g_Player implements Serializable{
 
     private String ipAddress;
 
-    public g_Player(int port) {
+    public Player(int port) {
         this.port = port;
         this.ipAddress = "localhost";
         this.p_name = this.ipAddress+":"+this.port;
     }
 
-    public g_Player(String Name,String host,int port) {
+    public Player(String Name, String host, int port) {
         this.port = port;
         this.ipAddress = host;
         this.p_name = Name;
     }
 
-    public g_Player(String Name, int port){
+    public Player(String Name, int port){
         this.p_name = Name;
         this.port = port;
         this.ipAddress = "localhost:"+this.port;

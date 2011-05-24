@@ -1,13 +1,10 @@
 package com.github.benve.othellomultiplayer;
 
-import com.github.benve.othellomultiplayer.game.g_Player;
+import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-import com.github.benve.othellomultiplayer.network.g_Node;
-import com.sun.corba.se.spi.activation.Server;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParameterList;
+import com.github.benve.othellomultiplayer.network.Node;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.util.ArrayList;
@@ -24,12 +21,13 @@ public class gMain {
 
     public gMain(){}
 
+
     public static void main(String[] args) throws IOException, AlreadyBoundException, MaxPlayerException, NotBoundException {
-        g_Node mySelf;
+        Node mySelf;
         boolean isServer = false;
-        List<g_Player> plist = new ArrayList();
+        List<Player> plist = new ArrayList();
         if(args.length >= 3){
-            mySelf = new g_Node(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
+            mySelf = new Node(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
             if(Integer.parseInt(args[2]) == 1){
                 isServer = true;
             }
@@ -39,10 +37,15 @@ public class gMain {
             if(isServer)
                 mySelf.registerToGame(isServer,0);
             else
-                mySelf.registerToGame(isServer,1755);
+                mySelf.registerToGame(isServer,1234);
 
             for(int i=0;i<255; i++)
                 System.out.println(mySelf.askForIp());
+        } else {
+            System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
+                    "con 1 viene istanziato il registro dei giocatori");
+
         }
+
     }
 }

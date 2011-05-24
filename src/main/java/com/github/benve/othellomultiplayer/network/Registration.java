@@ -1,6 +1,6 @@
 package com.github.benve.othellomultiplayer.network;
 
-import com.github.benve.othellomultiplayer.game.g_Player;
+import com.github.benve.othellomultiplayer.game.Player;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -17,11 +17,11 @@ import java.util.List;
  * Time: 13.14
  * To change this template use File | Settings | File Templates.
  */
-public class g_Registration extends UnicastRemoteObject implements g_Registration_Remote {
+public class Registration extends UnicastRemoteObject implements RegistrationRemote {
     /**
      * Contiene i giocatori registrati
      */
-    private final List<g_Player> plist;
+    private final List<Player> plist;
     private int regPort;
     /**
      * Numero di giocatori richiesti per la partita
@@ -30,13 +30,13 @@ public class g_Registration extends UnicastRemoteObject implements g_Registratio
 
     private Registry registry;
 
-    public g_Registration(int r_port) throws RemoteException, AlreadyBoundException {
+    public Registration(int r_port) throws RemoteException, AlreadyBoundException {
         super();
         this.regPort = r_port;
         this.plist = new ArrayList();
     }
 
-    public g_Registration(int r_port,int maxplayer) throws RemoteException {
+    public Registration(int r_port, int maxplayer) throws RemoteException {
         super();
         this.plist = new ArrayList();
         this.maxplayer = maxplayer;
@@ -52,7 +52,7 @@ public class g_Registration extends UnicastRemoteObject implements g_Registratio
      * @throws MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
      */
 
-    public List<g_Player> register(g_Player pplay) throws MaxPlayerException,RemoteException {
+    public List<Player> register(Player pplay) throws MaxPlayerException,RemoteException {
 
         if (plist.size() >= maxplayer) throw new MaxPlayerException("Numero massimo di giocatori raggiunto");
 
@@ -70,13 +70,13 @@ public class g_Registration extends UnicastRemoteObject implements g_Registratio
     }
 
 
-    public List<g_Player> getPlayerList() throws RemoteException{
+    public List<Player> getPlayerList() throws RemoteException{
         return plist;
     }
 
     public void instaceRegistration() throws RemoteException, AlreadyBoundException {
         Registry registry = LocateRegistry.getRegistry(this.regPort);
         this.registry = registry;
-        registry.bind("g_Reg",this);
+        registry.bind("Reg",this);
     }
 }
