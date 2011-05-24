@@ -17,7 +17,7 @@ public class Player implements Serializable{
 
     private int port;
 
-    private final UUID uuid = UUID.randomUUID();
+    private int uuid;
 
     private String ipAddress;
 
@@ -25,18 +25,21 @@ public class Player implements Serializable{
         this.port = port;
         this.ipAddress = "localhost";
         this.p_name = this.ipAddress+":"+this.port;
+        this.uuid = UUID.randomUUID().hashCode();
     }
 
     public Player(String Name, String host, int port) {
         this.port = port;
         this.ipAddress = host;
         this.p_name = Name;
+        this.uuid = UUID.randomUUID().hashCode();
     }
 
     public Player(String Name, int port){
         this.p_name = Name;
         this.port = port;
         this.ipAddress = "localhost:"+this.port;
+        this.uuid = UUID.randomUUID().hashCode();
     }
 
     public String getName(){
@@ -47,7 +50,7 @@ public class Player implements Serializable{
         return this.ipAddress.toString();
     }
 
-    public UUID getUuid(){
+    public int getUuid(){
         return this.uuid;
     }
 
