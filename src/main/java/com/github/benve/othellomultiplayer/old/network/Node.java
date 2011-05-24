@@ -1,8 +1,8 @@
-package com.github.benve.othellomultiplayer.network;
+package com.github.benve.othellomultiplayer.old.network;
 
-import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.old.game.Player;
 
-import javax.xml.transform.Source;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ServerSocket;

@@ -1,6 +1,7 @@
-package com.github.benve.othellomultiplayer.network;
+package com.github.benve.othellomultiplayer.old.network;
 
-import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.old.game.Player;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

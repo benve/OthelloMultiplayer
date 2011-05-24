@@ -63,6 +63,13 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
         maxplayer = n_player;
     }
 
+    /**
+     * Crea il registro RMI e si registra
+     * se il nodo è il server di registrazione al gioco istanzia anche Registration
+     * @param server true se il nodo deve istanziare anche il Registration
+     * @throws RemoteException
+     * @throws AlreadyBoundException
+     */
     public void initializeNode(boolean server) throws RemoteException, AlreadyBoundException {
         Registry register;
         register = LocateRegistry.createRegistry(this.me.getPort());
@@ -79,6 +86,14 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
         reg1.instaceRegistration();
     }
 
+    /**
+     * Il nodo si registra al gioco
+     * @param server se true io ho il Registration altrimenti lo prendo dal nodo remoto
+     * @param rPort porta del registro remoto
+     * @throws MaxPlayerException
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException {
         int regPort;
         if(server)
@@ -95,7 +110,14 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
 
     }
 
+    /**
+     * Prendo il nodo next e gli chiedo l'ip porta (chiamo replyForIp)
+     * @return
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     public String askForIp() throws RemoteException, NotBoundException {
+        //Trovo me stesso
         int position = 0;
         for(int i=0;i<this.allPlayer.size();i++){
             if(me.getUuid().equals(allPlayer.get(i).getUuid())){
@@ -113,6 +135,11 @@ public class g_Node extends UnicastRemoteObject implements g_Node_Remote {
 
     }
 
+    /**
+     * Restituisco una Stringa con ip:porta
+     * @return
+     * @throws RemoteException
+     */
     public String replyForIp() throws RemoteException{
         return (me.getIpAddress()+":"+me.getPort()).toString();//me.getUuid().toString();
     }

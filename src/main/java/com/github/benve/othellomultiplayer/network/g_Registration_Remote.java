@@ -1,6 +1,5 @@
 package com.github.benve.othellomultiplayer.network;
 
-import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.g_Player;
 
 import java.rmi.AlreadyBoundException;

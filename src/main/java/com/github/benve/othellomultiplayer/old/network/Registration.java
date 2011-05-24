@@ -1,10 +1,9 @@
-package com.github.benve.othellomultiplayer.network;
+package com.github.benve.othellomultiplayer.old.network;
 
-import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.old.game.Player;
 
-import java.lang.reflect.Array;
 import java.rmi.*;
-import java.rmi.server.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class Registration {
      * @param pplay
      * @return la lista con i giocatori
      * @throws RemoteException
-     * @throws MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
+     * @throws com.github.benve.othellomultiplayer.network.MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
      */
     public List<Player> register(Player pplay) throws MaxPlayerException {
 

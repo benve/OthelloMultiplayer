@@ -1,17 +1,12 @@
-package com.github.benve.othellomultiplayer.game;
+package com.github.benve.othellomultiplayer.old.game;
 
-import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-import com.github.benve.othellomultiplayer.network.Node;
-import com.github.benve.othellomultiplayer.network.Registration;
-import com.github.benve.othellomultiplayer.network.RemoteRegistration;
+import com.github.benve.othellomultiplayer.old.network.Node;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.AlreadyBoundException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.List;
-import java.util.UUID;
+
 /**
  *
  * @author ledonne

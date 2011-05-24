@@ -1,6 +1,8 @@
-package com.github.benve.othellomultiplayer.network;
+package com.github.benve.othellomultiplayer;
 
 import com.github.benve.othellomultiplayer.game.g_Player;
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.network.g_Node;
 import com.sun.corba.se.spi.activation.Server;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParameterList;
 
