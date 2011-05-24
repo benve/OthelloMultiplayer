@@ -1,8 +1,10 @@
 package com.github.benve.othellomultiplayer.game;
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
+import static com.github.benve.othellomultiplayer.utils.NetUtils.getHostAddress;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,37 +15,47 @@ import java.util.UUID;
  * sostanzialmente uguale)
  */
 public class Player implements Serializable{
-    private String p_name;
+    private String name;
 
+    /**
+     * Porta sulla quale il giocatore sta in ascolto
+     */
     private int port;
 
+    /**
+     * Id univoco del giocatore
+     */
     private int uuid;
 
+    /**
+     * IP locale del giocatore
+     */
     private String ipAddress;
 
-    public Player(int port) {
-        this.port = port;
-        this.ipAddress = "localhost";
-        this.p_name = this.ipAddress+":"+this.port;
-        this.uuid = UUID.randomUUID().hashCode();
+    /**
+     * Crea un nuovo giocatore con nome ipmacchina:porta
+     * @param port porta su cui sta in ascolto il registro RMI
+     * @throws UnknownHostException non è possibile ottenere l'ip corrente
+     */
+    public Player(int port) throws UnknownHostException {
+        this(getHostAddress()+":"+port, port);
     }
 
-    public Player(String Name, String host, int port) {
+    /**
+     * Crea un nuovo giocatore
+     * @param name nome del giocatore
+     * @param port porta su cui sta in ascolto il registro RMI
+     * @throws UnknownHostException non è possibile ottenere l'ip corrente
+     */
+    public Player(String name, int port) throws UnknownHostException {
+        this.name = name;
         this.port = port;
-        this.ipAddress = host;
-        this.p_name = Name;
-        this.uuid = UUID.randomUUID().hashCode();
-    }
-
-    public Player(String Name, int port){
-        this.p_name = Name;
-        this.port = port;
-        this.ipAddress = "localhost:"+this.port;
+        this.ipAddress = getHostAddress();
         this.uuid = UUID.randomUUID().hashCode();
     }
 
     public String getName(){
-        return this.p_name.toString();
+        return this.name.toString();
     }
 
     public String getIpAddress(){
