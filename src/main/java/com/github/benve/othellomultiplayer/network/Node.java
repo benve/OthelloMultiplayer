@@ -1,9 +1,11 @@
 package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.game.PlayerList;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,14 +26,13 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
     private Player me;
     private Registry registry;
-    public List<Player> allPlayer;
+    public PlayerList allPlayer;
     private int maxplayer;
     private Registration reg1;
 
-    public Node(int n_port) throws RemoteException, AlreadyBoundException {
+    public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException {
         super();
         me = new Player(n_port);
-        allPlayer = new ArrayList<Player>();
         maxplayer = 3;
     }
 
@@ -43,22 +44,19 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         System.out.println("porta:"+freeport);
 
-        me = new Player(Name,"localhost",freeport);
-        allPlayer = new ArrayList<Player>();
+        me = new Player(Name,freeport);
         maxplayer = 4;
     }
 
-    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException {
+    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException {
         super();
         me = new Player(n_port);
-        allPlayer = new ArrayList<Player>();
         maxplayer = n_player;
     }
 
     public Node(String Name, int port, int n_player) throws IOException {
         super();
-        me = new Player(Name,"localhost",port);
-        allPlayer = new ArrayList<Player>();
+        me = new Player(Name, port);
         maxplayer = n_player;
     }
 
@@ -104,8 +102,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
-        r_reg.register(this.me);
-        this.allPlayer = r_reg.getPlayerList();
+        this.allPlayer = r_reg.register(this.me);
 
     }
 
@@ -119,7 +116,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         //Trovo me stesso
         int position = 0;
         for(int i=0;i<this.allPlayer.size();i++){
-            if(me.getUuid().equals(allPlayer.get(i).getUuid())){
+            if(me.getUuid() == (allPlayer.get(i).getUuid())){
                 System.out.println("Trovato!"+i);
                 position = i;
                 break;

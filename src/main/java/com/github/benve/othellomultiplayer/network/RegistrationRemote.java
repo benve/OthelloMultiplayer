@@ -1,6 +1,7 @@
 package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.game.PlayerList;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.Remote;
@@ -15,9 +16,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface RegistrationRemote extends Remote {
-    List<Player> register(Player pplay) throws MaxPlayerException,RemoteException;
-
-    List<Player> getPlayerList() throws RemoteException;
+    PlayerList register(Player pplay) throws MaxPlayerException,RemoteException;
 
     void instaceRegistration() throws RemoteException, AlreadyBoundException;
 }

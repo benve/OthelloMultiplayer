@@ -4,6 +4,7 @@ import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
 import com.github.benve.othellomultiplayer.network.Node;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -36,11 +37,23 @@ public class gMain {
 
             if(isServer)
                 mySelf.registerToGame(isServer,0);
-            else
+            else {
                 mySelf.registerToGame(isServer,1234);
+                mySelf.allPlayer.remove(0);
 
-            for(int i=0;i<255; i++)
-                System.out.println(mySelf.askForIp());
+            }
+
+
+            for(int i=0;i<255; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                System.out.println(mySelf.allPlayer);
+            }
+
+
         } else {
             System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
                     "con 1 viene istanziato il registro dei giocatori");

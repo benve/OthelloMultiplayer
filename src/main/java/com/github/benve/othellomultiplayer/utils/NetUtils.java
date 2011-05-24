@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
  * Time: 9:46 AM
  * To change this template use File | Settings | File Templates.
  */
-public class NetUtils {
+    public class NetUtils {
 
     /**
      * Ritorna un indirizzo ip pubblico della macchina
@@ -38,7 +38,8 @@ public class NetUtils {
      * @throws UnknownHostException
      */
     public static String getHostAddress() throws UnknownHostException {
-        return NetUtils.getPublicIP().getHostAddress();
+        return "localhost";
+        //return NetUtils.getPublicIP().getHostAddress();
     }
 
 
