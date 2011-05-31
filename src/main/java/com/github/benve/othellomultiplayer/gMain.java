@@ -1,13 +1,17 @@
 package com.github.benve.othellomultiplayer;
 
+import com.github.benve.othellomultiplayer.game.Board;
+import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
 import com.github.benve.othellomultiplayer.network.Node;
+import com.github.benve.othellomultiplayer.utils.NetUtils;
 
 import javax.naming.SizeLimitExceededException;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +30,15 @@ public class gMain {
     public static void main(String[] args) throws IOException, AlreadyBoundException, MaxPlayerException, NotBoundException {
         Node mySelf;
         boolean isServer = false;
+        BoardLogic bl1 = BoardLogic.getInstance();
+        Board b1;
         List<Player> plist = new ArrayList();
-        if(args.length >= 3){
+
+        NetUtils n = NetUtils.getInstance();
+
+        System.out.println(n.getHostAddress());
+        //n.getPublicIP().toString());
+        /*if(args.length >= 3){
             mySelf = new Node(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
             if(Integer.parseInt(args[2]) == 1){
                 isServer = true;
@@ -37,9 +48,10 @@ public class gMain {
 
             if(isServer)
                 mySelf.registerToGame(isServer,0);
+                b1 = new Board(10,10);
             else {
-                mySelf.registerToGame(isServer,1234);
-                mySelf.allPlayer.remove(0);
+                mySelf.registerToGame(isServer,1755);
+                //mySelf.allPlayer.remove(0);
 
             }
 
@@ -51,6 +63,7 @@ public class gMain {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
                 System.out.println(mySelf.allPlayer);
+
             }
 
 
@@ -58,7 +71,7 @@ public class gMain {
             System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
                     "con 1 viene istanziato il registro dei giocatori");
 
-        }
+        }      */
 
     }
 }

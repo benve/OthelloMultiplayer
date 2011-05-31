@@ -5,6 +5,7 @@ import com.github.benve.othellomultiplayer.game.PlayerList;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -30,7 +31,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     private int maxplayer;
     private Registration reg1;
 
-    public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException {
+    public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = 3;
@@ -48,7 +49,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         maxplayer = 4;
     }
 
-    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException {
+    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = n_player;
@@ -139,5 +140,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public String replyForIp() throws RemoteException{
         return (me.getIpAddress()+":"+me.getPort()).toString();//me.getUuid().toString();
     }
+
+
 
 }

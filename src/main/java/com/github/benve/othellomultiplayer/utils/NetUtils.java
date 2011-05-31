@@ -1,7 +1,7 @@
 package com.github.benve.othellomultiplayer.utils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.Enumeration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,35 +12,50 @@ import java.net.UnknownHostException;
  */
     public class NetUtils {
 
-    /**
-     * Ritorna un indirizzo ip pubblico della macchina
-     * @return un indirizzo pubblico della macchina, null ne la macchina non ne ha
-     * @throws UnknownHostException
-     */
-    public static InetAddress getPublicIP() throws UnknownHostException {
+        private static NetUtils instance;
 
-        //Ottengo tutti gli IP della macchina
-        String hostName = InetAddress.getLocalHost().getHostName();
-        InetAddress addrs[] = InetAddress.getAllByName(hostName);
+        private NetUtils(){};
 
-        for (InetAddress addr : addrs) {
-            if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()) {
-                return addr;
-            }
+        public static NetUtils getInstance(){
+            if(instance == null)
+                instance = new NetUtils();
+            return instance;
         }
 
-        return null;
-    }
+        /**
+         * Ritorna un indirizzo ip pubblico della macchina
+         * @return un indirizzo pubblico della macchina, null ne la macchina non ne ha
+         * @throws UnknownHostException
+         */
+        /*public InetAddress getPublicIP() throws UnknownHostException {
 
-    /**
-     * Ritorna un indirizzo ip pubblico della macchina
-     * @return un indirizzo pubblico della macchina, null ne la macchina non ne ha
-     * @throws UnknownHostException
-     */
-    public static String getHostAddress() throws UnknownHostException {
-        return "localhost";
-        //return NetUtils.getPublicIP().getHostAddress();
-    }
+            //Ottengo tutti gli IP della macchina
+            String hostName = InetAddress.getLocalHost().getHostName();
+            InetAddress addrs[] = InetAddress.getAllByName(hostName);
 
+            for (InetAddress addr : addrs) {
+                if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()) {
+                    return addr;
+                }
+            }
 
+            return null;
+        }*/
+
+        /**
+         * Ritorna un indirizzo ip pubblico della macchina
+         * @return un indirizzo pubblico della macchina, null ne la macchina non ne ha
+         * @throws UnknownHostException
+         */
+        public String getHostAddress() throws UnknownHostException, SocketException {
+            NetworkInterface iface;
+            iface = NetworkInterface.getByName("wlan0");
+            for(Enumeration<InetAddress> addresses = iface.getInetAddresses(); addresses.hasMoreElements();){
+                InetAddress address = addresses.nextElement();
+                if(address instanceof Inet4Address)
+                    return address.getHostAddress();
+            }
+
+            return null;
+        }
 }
