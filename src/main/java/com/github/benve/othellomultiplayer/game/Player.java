@@ -1,10 +1,13 @@
 package com.github.benve.othellomultiplayer.game;
 
+import com.github.benve.othellomultiplayer.utils.NetUtils;
+
 import java.io.Serializable;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
-import static com.github.benve.othellomultiplayer.utils.NetUtils.getHostAddress;
+//import static com.github.benve.othellomultiplayer.utils.NetUtils.getHostAddress;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,8 +40,9 @@ public class Player implements Serializable{
      * @param port porta su cui sta in ascolto il registro RMI
      * @throws UnknownHostException non è possibile ottenere l'ip corrente
      */
-    public Player(int port) throws UnknownHostException {
-        this(getHostAddress()+":"+port, port);
+    public Player(int port) throws UnknownHostException, SocketException {
+        this(NetUtils.getInstance().getHostAddress()+":"+port, port);
+
     }
 
     /**
@@ -47,10 +51,10 @@ public class Player implements Serializable{
      * @param port porta su cui sta in ascolto il registro RMI
      * @throws UnknownHostException non è possibile ottenere l'ip corrente
      */
-    public Player(String name, int port) throws UnknownHostException {
+    public Player(String name, int port) throws UnknownHostException, SocketException {
         this.name = name;
         this.port = port;
-        this.ipAddress = getHostAddress();
+        this.ipAddress = NetUtils.getInstance().getHostAddress();
         this.uuid = UUID.randomUUID().hashCode();
     }
 

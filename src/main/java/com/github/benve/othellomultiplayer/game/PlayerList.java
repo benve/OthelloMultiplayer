@@ -1,6 +1,7 @@
 package com.github.benve.othellomultiplayer.game;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,25 +13,21 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PlayerList extends LinkedList<Player> implements List<Player>{
+    public int getPosition(Player p1){
+        return this.indexOf(p1);
+    }
 
-    /**
-     * Dato un giocatore ritorna il next della lista
-     * @param myP giocatore corrente
-     * @return giocatore successivo, null se non trovo il giocatore corrente
-     */
-    public Player nextP(Player myP) {
+    public Player getNext(Player p1){
+        return this.get(this.indexOf(p1)+1 % size());
+    }
 
-        for (int i = 0; i < (this.size()-1); i++) {//Scorro tutti tranne l'ultimo
-            if (this.get(i).getUuid() == myP.getUuid()) {
-                return this.get(i+1);
-            }
-        }
-        //Se sono l'ultimo torno in testa alla lista
-        if (this.get(this.size()-1).getUuid() == myP.getUuid()) {
-            return this.get(0);
-        }
+    public void removeElementByPosition(int position){
+        this.remove(position);
+    }
 
-        return null;
+    public void removeElementByReference(Player p1){
+        int position = this.getPosition(p1);
+        this.remove(position);
     }
 
 }
