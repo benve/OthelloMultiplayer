@@ -13,12 +13,28 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PlayerList extends LinkedList<Player> implements List<Player>{
+
     public int getPosition(Player p1){
-        return this.indexOf(p1);
+        for (int i = 0; i < (this.size()); i++) {//Scorro tutti tranne l'ultimo
+            if (this.get(i).getUuid() == p1.getUuid()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public Player getNext(Player p1){
-        return this.get(this.indexOf(p1)+1 % size());
+        for (int i = 0; i < (this.size()-1); i++) {//Scorro tutti tranne l'ultimo
+            if (this.get(i).getUuid() == p1.getUuid()) {
+                return this.get(i+1);
+            }
+        }
+        //Se sono l'ultimo torno in testa alla lista
+        if (this.get(this.size()-1).getUuid() == p1.getUuid()) {
+            return this.get(0);
+        }
+
+        return null;
     }
 
     public void removeElementByPosition(int position){

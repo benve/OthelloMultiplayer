@@ -4,6 +4,7 @@ import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.network.Message;
 import com.github.benve.othellomultiplayer.network.Node;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
 
@@ -33,12 +34,14 @@ public class gMain {
         BoardLogic bl1 = BoardLogic.getInstance();
         Board b1;
         List<Player> plist = new ArrayList();
+        Message msg = new Message();
 
         NetUtils n = NetUtils.getInstance();
 
         System.out.println(n.getHostAddress());
+
         //n.getPublicIP().toString());
-        /*if(args.length >= 3){
+        if(args.length >= 3){
             mySelf = new Node(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
             if(Integer.parseInt(args[2]) == 1){
                 isServer = true;
@@ -46,17 +49,22 @@ public class gMain {
 
             mySelf.initializeNode(isServer);
 
-            if(isServer)
+            System.out.println(mySelf.me.getUuid()+"|"+mySelf.me.getPort());
+
+            if(isServer) {
                 mySelf.registerToGame(isServer,0);
                 b1 = new Board(10,10);
-            else {
-                mySelf.registerToGame(isServer,1755);
+
+                msg.content = "Server";
+                mySelf.startBroadcast(msg);
+            } else {
+                mySelf.registerToGame(isServer,1234);
                 //mySelf.allPlayer.remove(0);
 
             }
 
 
-            for(int i=0;i<255; i++) {
+            /*for(int i=0;i<255; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -64,14 +72,35 @@ public class gMain {
                 }
                 System.out.println(mySelf.allPlayer);
 
-            }
+            }*/
 
 
         } else {
             System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
                     "con 1 viene istanziato il registro dei giocatori");
 
-        }      */
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

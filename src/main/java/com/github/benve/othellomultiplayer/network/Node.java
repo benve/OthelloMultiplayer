@@ -13,8 +13,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +23,7 @@ import java.util.List;
  */
 public class Node extends UnicastRemoteObject implements NodeRemote {
 
-    private Player me;
+    public Player me;
     private Registry registry;
     public PlayerList allPlayer;
     private int maxplayer;
@@ -106,6 +104,31 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         this.allPlayer = r_reg.register(this.me);
 
     }
+
+    @Override
+    public void broadcast(Message msg) throws RemoteException, NotBoundException {
+        if (msg.uuid == this.me.getUuid()) {
+            System.out.println(msg.content);
+        } else {
+            System.out.println(msg.content+"|"+me.getPort());
+            getNext().broadcast(msg);
+        }
+    }
+
+    public void startBroadcast(Message msg) throws NotBoundException, RemoteException {
+        msg.uuid = me.getUuid();
+        this.getNext().broadcast(msg);
+    }
+
+    public NodeRemote getNext() throws RemoteException, NotBoundException {
+        Player nextPlayer = this.allPlayer.getNext(this.me);
+        Registry register = LocateRegistry.getRegistry(nextPlayer.getPort());
+
+        NodeRemote rem = (NodeRemote) register.lookup("Node");
+        return rem;
+        }
+
+
 
     /**
      * Prendo il nodo next e gli chiedo l'ip porta (chiamo replyForIp)

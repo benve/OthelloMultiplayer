@@ -10,7 +10,6 @@ import java.rmi.RemoteException;
  * User: lemad85
  * Date: 20/05/11
  * Time: 11.24
- * To change this template use File | Settings | File Templates.
  */
 public interface NodeRemote extends Remote {
 
@@ -21,4 +20,6 @@ public interface NodeRemote extends Remote {
     public String askForIp() throws RemoteException, NotBoundException;
 
     public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException;
+
+    public void broadcast(Message msg) throws RemoteException, NotBoundException;
 }
