@@ -106,18 +106,26 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     }
 
     @Override
-    public void broadcast(Message msg) throws RemoteException, NotBoundException {
+    public void broadcast(Message msg) throws NotBoundException {
         if (msg.uuid == this.me.getUuid()) {
             System.out.println(msg.content);
         } else {
             System.out.println(msg.content+"|"+me.getPort());
-            getNext().broadcast(msg);
+            try {
+                getNext().broadcast(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 
-    public void startBroadcast(Message msg) throws NotBoundException, RemoteException {
+    public void startBroadcast(Message msg) throws NotBoundException {
         msg.uuid = me.getUuid();
-        this.getNext().broadcast(msg);
+        try {
+            this.getNext().broadcast(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public NodeRemote getNext() throws RemoteException, NotBoundException {
