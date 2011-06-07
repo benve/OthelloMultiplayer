@@ -9,8 +9,15 @@ import java.io.Serializable;
 public class Board implements Serializable{
 
     public int [][] board;
-    private int height;
-    private int width;
+    public final int height;
+    public final int width;
+
+    //Solo per test
+    protected void setBoard(int [][] b) {
+        assert b.length == width;
+        assert b[0].length == height;
+        board = b;
+    }
     
     public Board(){
         board = new int[10][10];

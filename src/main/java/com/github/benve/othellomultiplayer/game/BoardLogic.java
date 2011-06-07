@@ -10,7 +10,7 @@ package com.github.benve.othellomultiplayer.game;
 public class BoardLogic {
     private static BoardLogic instance;
 
-    private BoardLogic(){};
+    private BoardLogic(){}
 
     public static BoardLogic getInstance(){
         if(instance == null)

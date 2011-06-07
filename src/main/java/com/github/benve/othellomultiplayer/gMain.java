@@ -33,8 +33,6 @@ public class gMain {
         boolean isServer = false;
         BoardLogic bl1 = BoardLogic.getInstance();
         Board b1;
-        List<Player> plist = new ArrayList();
-        Message msg = new Message();
 
         NetUtils n = NetUtils.getInstance();
 
@@ -54,7 +52,7 @@ public class gMain {
             if(isServer) {
                 mySelf.registerToGame(isServer,0);
                 b1 = new Board(10,10);
-
+                Message msg = new Message();
                 msg.content = "Server";
                 mySelf.startBroadcast(msg);
             } else {
