@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import sun.security.krb5.internal.crypto.Aes256CtsHmacSha1EType;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -14,7 +15,6 @@ import static org.junit.Assert.assertEquals;
  * User: giacomo
  * Date: 6/3/11
  * Time: 11:15 AM
- * To change this template use File | Settings | File Templates.
  */
 public class BoardLogicTest {
 
@@ -22,9 +22,9 @@ public class BoardLogicTest {
 
     BoardLogic boardLogic;
 
-    private static final int P0 = 0;
     private static final int P1 = 1;
     private static final int P2 = 2;
+    private static final int P3 = 3;
 
     @Before
     public void setUp() throws Exception {
@@ -32,9 +32,9 @@ public class BoardLogicTest {
 
         board.setBoard(new int[][]{
                 {-1, -1, -1, -1},
-                {-1,  P0,  P1, -1},
+                {-1,  P3,  P1, -1},
                 {-1,  P1,  -1, -1},
-                {-1, -1, -1, P2}
+                {-1, -1,  -1, P2}
         });
 
         boardLogic = BoardLogic.getInstance();
@@ -43,32 +43,38 @@ public class BoardLogicTest {
     @Test
     public void testCanColonize() throws Exception {
         assertTrue(
-                boardLogic.canColonize(board,
-                        0, 1, P0)
+                boardLogic.canColonize(board, 0, 1, P3)
         );
         //Casella non adiacente
         assertFalse(
-                boardLogic.canColonize(board,
-                        0, 1, P2)
+                boardLogic.canColonize(board, 0, 1, P2)
         );
         //Casella già occupata
         assertFalse(
-                boardLogic.canColonize(board,
-                        2, 1, P0)
+                boardLogic.canColonize(board, 2, 1, P3)
         );
         //Casella già occupata da me
         assertFalse(
-                boardLogic.canColonize(board,
-                        1, 1, P0)
+                boardLogic.canColonize(board, 1, 1, P3)
         );
     }
 
     @Test
     public void testGetSingleReversi() throws Exception {
-        boolean[][] res = boardLogic.getSingleReversi(board,
-                0, 1, P1);
+        boolean[][] res = boardLogic.getSingleReversi(board, 0, 1, P1);
 
         boolean[][] exp = new boolean[][]{
+                {false, true, false, false},
+                {false, true, false, false},
+                {false, false, false, false},
+                {false, false, false, false}
+        };
+
+        testMatrix(exp, res);
+
+        res = boardLogic.getSingleReversi(board, 0, 3, P3);
+
+        exp = new boolean[][]{
                 {false, false, false, false},
                 {false, false, false, false},
                 {false, false, false, false},
@@ -76,6 +82,17 @@ public class BoardLogicTest {
         };
 
         testMatrix(exp, res);
+
+        res = boardLogic.getSingleReversi(board, 2, 2, P2);
+
+                exp = new boolean[][]{
+                        {false, false, false, false},
+                        {false, false, false, false},
+                        {false, false, false, false},
+                        {false, false, false, false}
+                };
+
+                testMatrix(exp, res);
 
     }
 
@@ -88,41 +105,108 @@ public class BoardLogicTest {
         }
     }
 
+    private void testMatrix(int [][] exp, int [][] act) {
+        for (int i = 0; i < act.length; i++) {
+            for (int j = 0; j < act[i].length; j++) {
+                assertEquals(i+" "+j, act[i][j], exp[i][j]);
+            }
+
+        }
+    }
+
+
     @Test
     public void testHasReversi() throws Exception {
-        assertTrue(
-                boardLogic.hasReversi(board,
-                         P0)
-        );
+        //assertTrue(boardLogic.hasReversi(board, P3));
         assertFalse(
-                boardLogic.hasReversi(board,
-                         P2)
+                boardLogic.hasReversi(board, P2)
         );
     }
 
     @Test
     public void testGetAllReversi() throws Exception {
 
+        boolean[][] exp = new boolean[][]{
+                {false, false, false, false},
+                {false, false, false, true},
+                {false, false, false, false},
+                {false, true, false, false}
+        };
+
+        boolean[][] act = boardLogic.getAllReversi(board, P3);
+
+        testMatrix(exp, act);
     }
 
     @Test
     public void testCanReversi() throws Exception {
 
+        boolean[][] exp = new boolean[][]{
+                {false, true, false, false},
+                {false, true, false, false},
+                {false, false, false, false},
+                {false, false, false, false}
+        };
+
+        assertTrue(boardLogic.canReversi(4,4,exp));
+
+        exp = new boolean[][]{
+                {false, false, false, false},
+                {false, false, false, false},
+                {false, false, false, false},
+                {false, false, false, false}
+        };
+
+        assertFalse(boardLogic.canReversi(4,4,exp));
+
     }
 
     @Test
     public void testMoveReversi() throws Exception {
+        Board board2 = new Board(4,4);
 
-    }
+        board2.setBoard(new int[][]{
+                {P2, P2,   P1, -1},
+                {P1,  P3,  P1, -1},
+                {P1,  P1,  P1, -1},
+                {-1, -1,  -1, P2}
+        });
 
-    @Test
-    public void testColonizeField() throws Exception {
+        boolean[][] move = new boolean[][]{
+                {false, false, false, false},
+                {false, false, false, true},
+                {false, false, false, false},
+                {false, true, false, false}
+        };
 
+
+        boardLogic.moveReversi(board2, move, P3);
+
+
+
+        testMatrix(new int[][]{
+                {P2, P2,   P1, -1},
+                {P1,  P3,  P1, P3},
+                {P1,  P1,  P1, -1},
+                {-1, P3,  -1, P2}
+        }, board2.board);
     }
 
     @Test
     public void testHasColonize() throws Exception {
+        assertTrue(boardLogic.hasColonize(board, P1));
 
+        Board board2 = new Board(4,4);
+
+        board2.setBoard(new int[][]{
+                {P2, P2, P1, -1},
+                {P1,  P3,  P1, -1},
+                {P1,  P1,  P1, -1},
+                {-1, -1,  -1, P2}
+        });
+
+
+        assertFalse(boardLogic.hasColonize(board2,P3));
     }
 
     @Test
@@ -133,7 +217,7 @@ public class BoardLogicTest {
                 {false, true, true, true},
                 {true, false, false, true},
                 {true, false, true, true},
-                {true, true, false, false}
+                {true, true, true, false}
         };
 
         testMatrix(exp, res);
@@ -141,8 +225,8 @@ public class BoardLogicTest {
 
     }
 
-    @After
+    /*@After
     public void tearDown() throws Exception {
 
-    }
+    }  */
 }

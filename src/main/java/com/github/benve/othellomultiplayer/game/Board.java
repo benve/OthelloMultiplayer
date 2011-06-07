@@ -9,28 +9,28 @@ import java.io.Serializable;
 public class Board implements Serializable{
 
     public int [][] board;
-    public final int height;
-    public final int width;
+    public final int row;
+    public final int column;
 
     //Solo per test
     protected void setBoard(int [][] b) {
-        assert b.length == width;
-        assert b[0].length == height;
+        assert b.length == column;
+        assert b[0].length == row;
         board = b;
     }
     
     public Board(){
         board = new int[10][10];
-        height = 10;
-        width = 10;
+        row = 10;
+        column = 10;
         for(int i=0;i<10;i++)
             for(int j=0;j<10;j++)
                 board[i][j] = -1;
     }
             
     public Board(int x, int y){
-        width = x;
-        height = y;
+        column = x;
+        row = y;
         board = new int[x][y];
         for(int i=0;i<x;i++)
             for(int j=0;j<y;j++)
@@ -53,12 +53,12 @@ public class Board implements Serializable{
         return result;
     }
 
-    public int getHeight(){
-        return this.height;
+    public int getRow(){
+        return this.row;
     }
 
-    public int getWidth(){
-        return this.width;
+    public int getColumn(){
+        return this.column;
     }
 
 

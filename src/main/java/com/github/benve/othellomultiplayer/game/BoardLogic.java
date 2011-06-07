@@ -24,30 +24,30 @@ public class BoardLogic {
      * a una delle pedine del giocatore
      */
 
-    public boolean canColonize(Board b1, int x1, int y1, int currPlayer){
+    public boolean canColonize(Board b, int r, int c, int currPlayer){
         boolean result = true;
         int hi,hj,wi,wj,pedine;
         pedine = 0;
-        if(b1.getStatus(x1, y1) == -1){
-            if(x1==0){
-                hi = 0;hj= x1+1;
-            }else if(x1==b1.getHeight()-1){
-                hi = x1-1;hj = x1;
+        if(b.getStatus(r, c) == -1){
+            if(r==0){
+                hi = 0;hj= r+1;
+            }else if(r==b.getRow()-1){
+                hi = r-1;hj = r;
             }else{
-                hi = x1-1;hj = x1+1;
+                hi = r-1;hj = r+1;
             }
 
-            if(y1==0){
-                wi = 0;wj= y1+1;
-            }else if(y1==b1.getWidth()-1){
-                wi = y1-1;wj = y1;
+            if(c==0){
+                wi = 0;wj= c+1;
+            }else if(c==b.getColumn()-1){
+                wi = c-1;wj = c;
             }else{
-                wi = y1-1;wj = y1+1;
+                wi = c-1;wj = c+1;
             }
 
             for(int i = hi;i<= hj; i++)
                 for(int j = wi; j<=wj; j++){
-                   if(b1.getStatus(i,j) != -1 && currPlayer == b1.getStatus(i,j))
+                   if(b.getStatus(i,j) != -1 && currPlayer == b.getStatus(i,j))
                        pedine++;
                 }
             if(pedine==0)
@@ -60,51 +60,36 @@ public class BoardLogic {
 
     /*
      * getSingleReversi: prende in input una coordinata e lo int del giocatore e una
-     * matrice sulla quale verranno salvate le pedine che posso mangiare con quella mossa.
-     *
-     * Es.
-     * Stato blobale
-     * <pre>
-     * 0 0 0 0
-     * 0 1 0 0
-     * 0 0 2 0
-     * 0 0 0 0
-     * </pre>
-     *
-     * Matrice risultato
-     * <pre>
-     * f f f f
-     * f f f f
-     * f f t f
-     * f f f t
-     * </pre>
-     *
+     * matrice sulla quale verranno salvate le pedine che posso mangiare con quella mossa
+     * e se possono essere mangiate pedine la mossa stessa
      */
-
-    public boolean[][] getSingleReversi(Board b1, int x1, int y1, int currPlayer){
-        boolean[][] mosseReversi = new boolean[b1.getHeight()][b1.getWidth()];
+    public boolean[][] getSingleReversi(Board b, int r, int c, int currPlayer){
+        boolean[][] mosseReversi = new boolean[b.getRow()][b.getColumn()];
         int i,j,dist;
-        boolean find;
+        boolean find, gFind;
+        gFind = false;
 
-        for(i=0;i<b1.getHeight();i++)
-            for(j=0;j<b1.getWidth();j++)
+        for(i=0;i<b.getRow();i++)
+            for(j=0;j<b.getColumn();j++)
                 mosseReversi[i][j] = false;
 
-        mosseReversi[x1][y1] = true;
+        //mosseReversi[r][c] = true;
 
-        if(b1.getStatus(x1,y1) != -1)
+        if(b.getStatus(r,c) != -1)
             return mosseReversi;
 
-        //nord: y fissa x decrescente da x1-1 a 0
+        //nord: y fissa x decrescente da r-1 a 0
         find = false;
         dist = 0;
 
-        for(i=x1-1;i>=0;i--)
-            if(b1.getStatus(i,y1) != -1){
-                if(b1.getStatus(i,y1) != currPlayer){
+        for(i=r-1;i>=0;i--)
+            if(b.getStatus(i,c) != -1){
+                if(b.getStatus(i,c) != currPlayer){
                     dist++;find = false;
                 }else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0;find = false;
@@ -113,18 +98,20 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1] = true;
+                mosseReversi[r-1-i][c] = true;
 
-        //sud: y fissa x cresente da x1+1 a height-1
+        //sud: y fissa x cresente da r+1 a row-1
         find = false;
         dist = 0;
 
-        for(i=x1+1;i<b1.getHeight();i++)
-            if(b1.getStatus(i,y1) != -1){
-                if(b1.getStatus(i,y1) != currPlayer){
+        for(i=r+1;i<b.getRow();i++)
+            if(b.getStatus(i,c) != -1){
+                if(b.getStatus(i,c) != currPlayer){
                     dist++;find = false;
                 }else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0;find = false;
@@ -133,19 +120,21 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1] = true;
+                mosseReversi[r+1+i][c] = true;
 
-        //est: x fissa y crescente da y1+1 a width-1
+        //est: x fissa y crescente da c+1 a column-1
 
         find = false;
         dist = 0;
-        for(i=y1+1;i<b1.getWidth();i++)
-            if(b1.getStatus(x1,i) != -1){
-                if(b1.getStatus(x1,i) != currPlayer){
+        for(i=c+1;i<b.getColumn();i++)
+            if(b.getStatus(r,i) != -1){
+                if(b.getStatus(r,i) != currPlayer){
                     find = false;dist++;
                 }
                 else{
-                    find = true; break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0;find = false;
@@ -154,19 +143,21 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1][y1+1+i] = true;
+                mosseReversi[r][c+1+i] = true;
 
-        //ovest: x fissa y decrescente da y1-1 a 0
+        //ovest: x fissa y decrescente da c-1 a 0
 
         find = false;
         dist = 0;
-        for(i=y1-1;i>=0;i--)
-            if(b1.getStatus(x1,i) != -1){
-                if(b1.getStatus(x1,i) != currPlayer){
+        for(i=c-1;i>=0;i--)
+            if(b.getStatus(r,i) != -1){
+                if(b.getStatus(r,i) != currPlayer){
                     find = false;dist++;
                 }
                 else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0; find = false;
@@ -175,22 +166,24 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1][y1-1-i] = true;
+                mosseReversi[r][c-1-i] = true;
 
-        //nord-est: x decrescente da x1-1 a 0 y crescente da y1+1 a width-1
+        //nord-est: x decrescente da r-1 a 0 y crescente da c+1 a column-1
         find=false;
         dist=0;
 
-        i = x1-1; j = y1+1;
+        i = r-1; j = c+1;
 
-        while(i>=0 && j < b1.getWidth()){
-            if(b1.getStatus(i,j) != -1){
-                if(b1.getStatus(i,j) != currPlayer){
+        while(i>=0 && j < b.getColumn()){
+            if(b.getStatus(i,j) != -1){
+                if(b.getStatus(i,j) != currPlayer){
                     find = false;dist++;
                     i--;j++;
                 }
                 else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0; find = false;
@@ -200,22 +193,24 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1+1+i] = true;
+                mosseReversi[r-1-i][c+1+i] = true;
 
 
-        //sud-est: x crescente da x1+1 a height-1 y crescente da y1+1 a width-1
+        //sud-est: x crescente da r+1 a row-1 y crescente da c+1 a column-1
         find=false;
         dist=0;
 
-        i = x1+1; j = y1+1;
-        while(i<b1.getHeight() && j < b1.getWidth()){
-            if(b1.getStatus(i,j) != -1){
-                if(b1.getStatus(i,j) != currPlayer){
+        i = r+1; j = c+1;
+        while(i<b.getRow() && j < b.getColumn()){
+            if(b.getStatus(i,j) != -1){
+                if(b.getStatus(i,j) != currPlayer){
                     find = false;dist++;
                     i++;j++;
                 }
                 else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0; find = false;
@@ -225,21 +220,23 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1+1+i] = true;
+                mosseReversi[r+1+i][c+1+i] = true;
 
-        //sud-ovest: x crescente da x1+1 a height-1 y decrescente da y1-1 a 0
+        //sud-ovest: x crescente da r+1 a row-1 y decrescente da c-1 a 0
         find=false;
         dist=0;
 
-        i = x1+1; j = y1-1;
-        while(i<b1.getHeight() && j >= 0){
-            if(b1.getStatus(i,j) != -1){
-                if(b1.getStatus(i,j) != currPlayer){
+        i = r+1; j = c-1;
+        while(i<b.getRow() && j >= 0){
+            if(b.getStatus(i,j) != -1){
+                if(b.getStatus(i,j) != currPlayer){
                     find = false;dist++;
                     i++;j--;
                 }
                 else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0; find = false;
@@ -249,21 +246,23 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1+1+i][y1-1-i] = true;
+                mosseReversi[r+1+i][c-1-i] = true;
 
-        //nord-ovest: x decrescente da x1-1 a 0 y decrescente da y1-1 a 0
+        //nord-ovest: x decrescente da r-1 a 0 y decrescente da c-1 a 0
         find=false;
         dist=0;
 
-        i = x1-1; j = y1-1;
+        i = r-1; j = c-1;
         while(i >= 0 && j >= 0){
-            if(b1.getStatus(i,j) != -1){
-                if(b1.getStatus(i,j) != currPlayer){
+            if(b.getStatus(i,j) != -1){
+                if(b.getStatus(i,j) != currPlayer){
                     find = false;dist++;
                     i--;j--;
                 }
                 else{
-                    find = true;break;
+                    if(dist>0){
+                        find = true;gFind =true;
+                    }break;
                 }
             }else{
                 dist = 0; find = false;
@@ -273,7 +272,9 @@ public class BoardLogic {
 
         if(find)
             for(i=0;i<dist;i++)
-                mosseReversi[x1-1-i][y1-1-i] = true;
+                mosseReversi[r-1-i][c-1-i] = true;
+
+        mosseReversi[r][c] = gFind;
 
         return mosseReversi;
     }
@@ -284,22 +285,19 @@ public class BoardLogic {
      * e' possibile effettuare una mossa di reversi. Viene effettuata una scansione delle caselle vuote della
      * tavolozza e in corrispondenza anche di una sola mossa di reversi viene ritornato true;
      * */
+    public boolean hasReversi(Board b, int currentPlayer){
 
-    public boolean hasReversi(Board b1, int currentPlayer){
-        boolean result = false;
-        boolean [][] reversi = new boolean[b1.getHeight()][b1.getWidth()];
-        for(int i=0;i<b1.getHeight();i++)
-            for(int j=0;j<b1.getWidth();j++){
-                if(b1.getStatus(i,j) == -1){
-                    reversi = this.getSingleReversi(b1, i, j, currentPlayer);
-                    if(this.canReversi(b1.getHeight(), b1.getWidth(), reversi)){
-                        result = true;
-                        return result;
+        for(int i=0;i<b.getRow();i++)
+            for(int j=0;j<b.getColumn();j++){
+                if(b.getStatus(i,j) == -1) {
+                    boolean [][] reversi = this.getSingleReversi(b, i, j, currentPlayer);
+                    if(this.canReversi(b.getRow(), b.getColumn(), reversi)) {
+                        return true;
                     }
                 }
             }
 
-        return result;
+        return false;
     }
 
 
@@ -313,16 +311,12 @@ public class BoardLogic {
      *  false      Sulla casella non e' possibile effettuare una mossa di reversi
      *
      */
-
-    public boolean[][] getAllReversi(Board b1, int currPlayer){
-        boolean[][] mosseReversi = new boolean[b1.getHeight()][b1.getWidth()];
-        for(int i=0;i<b1.getHeight();i++)
-            for(int j=0;j<b1.getWidth();j++){
-                if(b1.getStatus(i,j) == -1){
-                    if(this.canReversi(b1.getHeight(), b1.getWidth(), this.getSingleReversi(b1, i, j, currPlayer))){
-                        mosseReversi[i][j] = true;
-                    }else
-                        mosseReversi[i][j] = false;
+    public boolean[][] getAllReversi(Board b, int currPlayer){
+        boolean[][] mosseReversi = new boolean[b.getRow()][b.getColumn()];
+        for(int i=0;i<b.getRow();i++)
+            for(int j=0;j<b.getColumn();j++){
+                if(b.getStatus(i,j) == -1){
+                    mosseReversi[i][j] = this.canReversi(b.getRow(), b.getColumn(), this.getSingleReversi(b, i, j, currPlayer));
                 }else
                     mosseReversi[i][j] = false;
             }
@@ -335,13 +329,9 @@ public class BoardLogic {
      * al suo interno contiene una mossa reversi valida
      *
      */
-
     public boolean canReversi(int height, int width, boolean[][] mossaReversi){
         boolean result;
-        if(this.orMatrice(height, width, mossaReversi))
-            result = true;
-        else
-            result = false;
+        result = this.orMatrice(height, width, mossaReversi);
         return result;
 
     }
@@ -350,50 +340,47 @@ public class BoardLogic {
      *  moveReversi: metodo che data la matrice di una mossa e il giocatore che deve giocare cambia lo
      *  stato della tavolozza mettendo i nuovi valori alle caselle corrette.
      */
-    public void moveReversi(Board b1, boolean[][] mossaReversi, int currentPlayer){
-        for(int i=0;i<b1.getHeight();i++)
-            for(int j=0;j<b1.getWidth();j++){
+    public void moveReversi(Board b, boolean[][] mossaReversi, int currentPlayer){
+        for(int i=0;i<b.getRow();i++)
+            for(int j=0;j<b.getColumn();j++){
                 if(mossaReversi[i][j]){
-                    b1.setStatus(i, j, currentPlayer);
+                    b.setStatus(i, j, currentPlayer);
                 }
             }
     }
 
-    public void colonizeField(Board b1, int x1, int y1, int currenPlayer){
-        b1.setStatus(x1,y1,currenPlayer);
+    public void colonizeField(Board b, int r, int c, int currenPlayer){
+        b.setStatus(r,c,currenPlayer);
     }
 
-   public boolean hasColonize(Board b1, int currentPlayer){
+   public boolean hasColonize(Board b, int currentPlayer){
        boolean result = false;
-       for(int i=0;i<b1.getHeight();i++)
-           for(int j=0;j<b1.getWidth();j++)
-               if(this.canColonize(b1, i, j, currentPlayer)){
+       for(int i=0;i<b.getRow();i++)
+           for(int j=0;j<b.getColumn();j++)
+               if(this.canColonize(b, i, j, currentPlayer)){
                         result = true;
                         break;
                }
        return result;
    }
 
-   public boolean[][] getAllColonize(Board b1, int currentPlayer){
-       boolean[][] allColonize = new boolean[b1.getHeight()][b1.getWidth()];
-       for(int i=0;i<b1.getHeight();i++)
-           for(int j=0;j<b1.getWidth();j++)
-               if(this.canColonize(b1, i, j, currentPlayer))
-                   allColonize[i][j] = true;
-               else
-                   allColonize[i][j] = false;
+   public boolean[][] getAllColonize(Board b, int currentPlayer){
+       boolean[][] allColonize = new boolean[b.getRow()][b.getColumn()];
+       for(int i=0;i<b.getRow();i++)
+           for(int j=0;j<b.getColumn();j++)
+               allColonize[i][j] = this.canColonize(b, i, j, currentPlayer);
 
        return allColonize;
    }
 
-   public void printBoard(Board b1){
-        for(int i=0;i<b1.getHeight();i++){
+   public void printBoard(Board b){
+        for(int i=0;i<b.getRow();i++){
             System.out.flush();
             System.out.print("|");
-            for(int j=0;j<b1.getWidth();j++){
+            for(int j=0;j<b.getColumn();j++){
                 System.out.flush();
-                if(b1.getStatus(i,j)!= -1)
-                   System.out.print(b1.getStatus(i,j)+"|");
+                if(b.getStatus(i,j)!= -1)
+                   System.out.print(b.getStatus(i,j)+"|");
                 else
                    System.out.print(" |");
             }
