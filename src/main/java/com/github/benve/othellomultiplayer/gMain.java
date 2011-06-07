@@ -33,21 +33,24 @@ public class gMain {
         boolean isServer = false;
         BoardLogic bl1 = BoardLogic.getInstance();
         Board b1;
+        int port;
 
         NetUtils n = NetUtils.getInstance();
 
-        System.out.println(n.getHostAddress());
-
         //n.getPublicIP().toString());
         if(args.length >= 3){
-            mySelf = new Node(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
+            port=Integer.parseInt(args[0]);
+
+            System.out.println(port+"\t"+n.getHostAddress());
+
+            mySelf = new Node(port,Integer.parseInt(args[1]));
             if(Integer.parseInt(args[2]) == 1){
                 isServer = true;
             }
 
             mySelf.initializeNode(isServer);
 
-            System.out.println(mySelf.me.getUuid()+"|"+mySelf.me.getPort());
+            System.out.println(mySelf.me.getPort()+"\t"+mySelf.me.getUuid()+"|"+mySelf.me.getPort());
 
             if(isServer) {
                 mySelf.registerToGame(isServer,0);
@@ -60,6 +63,9 @@ public class gMain {
                 //mySelf.allPlayer.remove(0);
 
             }
+
+            if(mySelf.allPlayer.getPosition(mySelf.me) == 0)
+                System.out.println(mySelf.me.getPort()+"\t"+"Sono il primo a cominciare");
 
 
             /*for(int i=0;i<255; i++) {

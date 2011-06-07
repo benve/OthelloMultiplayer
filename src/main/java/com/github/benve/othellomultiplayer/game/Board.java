@@ -12,6 +12,11 @@ public class Board implements Serializable{
     public final int row;
     public final int column;
 
+    /**
+     * Giocatore corrente
+     */
+    public int currP;
+
     //Solo per test
     protected void setBoard(int [][] b) {
         assert b.length == column;
