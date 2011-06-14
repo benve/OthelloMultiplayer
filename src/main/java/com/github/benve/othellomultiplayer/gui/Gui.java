@@ -1,6 +1,7 @@
 package com.github.benve.othellomultiplayer.gui;
 
 import com.github.benve.othellomultiplayer.game.Board;
+import com.github.benve.othellomultiplayer.game.BoardLogic;
 import processing.core.*;
 
 import java.util.*;
@@ -24,6 +25,8 @@ public class Gui extends PApplet {
         }
 
     }
+
+    final BoardLogic logic = BoardLogic.getInstance();
 
     //lato in caselle della scacchiera
     final int bSize = 8;
@@ -57,7 +60,7 @@ public class Gui extends PApplet {
         //Aggiungo giocatori dandogli pedine casuali
         for (int i = 0; i < nplayers; i++) {
             pls.add(i, new Player(i));
-            for (int j = 0; j < (10 - nplayers); j++) {
+            for (int j = 0; j < (6 - nplayers); j++) {
                 int x = PApplet.parseInt(random(0, bSize - 1));
                 int y = PApplet.parseInt(random(0, bSize - 1));
                 while (board.board[x][y] != -1) {
@@ -78,27 +81,47 @@ public class Gui extends PApplet {
 
         if (board != null) {
 
+            boolean[][] reversi = null;
+            boolean[][] colonize = null;
+
+            if (logic.hasReversi(board, currP)) {
+                reversi = logic.getAllReversi(board, currP);
+            } else if (logic.hasColonize(board, currP)) {
+                colonize = logic.getAllColonize(board, currP);
+            }
+
             //Disegno righe
-            for (int i = 0; i < bSize; i++) {
-                line(0, i * lato, width, i * lato);
+            for (int y = 0; y < bSize; y++) {
+                line(0, y * lato, width, y * lato);
             }
             //Disegno colonne
-            for (int i = 0; i < bSize; i++) {
-                line(i * lato, 0, i * lato, height);
+            for (int x = 0; x < bSize; x++) {
+                line(x * lato, 0, x * lato, height);
             }
 
             //Disegno pedine
             for (int i = 0; i < bSize; i++) {
                 for (int j = 0; j < bSize; j++) {
                     //println("Casella "+i+" "+j);
-                    if (board.getStatus(i, j) == -1) {
+                    if (board.getStatus(j, i) == -1) {
+                        if (reversi != null && reversi[j][i]) {
+                            stroke(pls.get(currP).c);
+                            noFill();
+                            strokeWeight(3);
+                            ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
+                        } else if (colonize != null && colonize[j][i]) {
+                            stroke(pls.get(currP).c);
+                            noFill();
+                            strokeWeight(3);
+                            rect((i * lato)+5, (j * lato)+5, lato-10, lato-10);
+                        }
                         /*if (board.isValid(i, j, currP) != VOID) {//E' una mossa consentita per il giocatore
                          fill(pls.get(currP).c);
                          text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                        } */
 
                     } else {//Cassella con una pedina
-                        fill(pls.get(board.getStatus(i, j)).c);
+                        fill(pls.get(board.getStatus(j, i)).c);
                         noStroke();
                         ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
 
@@ -122,7 +145,7 @@ public class Gui extends PApplet {
                 intk = Integer.parseInt(key + "");
 
                 println("Cambio Giocatore: " + intk);
-                currP = intk;
+                currP = intk % nplayers;
             } catch (NumberFormatException e) {
             }
             if (intk == -1) {
@@ -140,15 +163,20 @@ public class Gui extends PApplet {
         int nx = mouseX / lato;
         int ny = mouseY / lato;
 
-/*  if (board.isValid(nx, ny, currP) != VOID) {
-    byte ret = board.isValid(nx, ny, currP, true);
-    board.put(nx,ny,currP);
-    println(binary(ret));
-    currP = (currP + 1) %  pls.size();
-   println("Cambio Giocatore: "+currP); 
-  } else {
-   println("Mossa non consentita"); 
-  }*/
+        if (logic.canColonize(board,ny,nx,currP)) {
+            board.setStatus(ny, nx, currP);
+            currP = (currP + 1) %  pls.size();
+            println("Cambio Giocatore: "+currP);
+        } else {
+            boolean[][] allr = logic.getAllReversi(board, currP);
+            if (allr[ny][nx]) {
+                board.setStatus(ny, nx, currP);
+                currP = (currP + 1) %  pls.size();
+                println("Cambio Giocatore: "+currP);
+            } else println("Mossa non consentita");
+        }
+
+
     }
 
     static public void main(String args[]) {

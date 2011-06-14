@@ -42,18 +42,18 @@ public class Board implements Serializable{
                 board[i][j] = -1;
     }
     
-    public int getStatus(int x,int y){
-        return board[x][y];
+    public int getStatus(int r,int c){
+        return board[r][c];
     }
     
-    public void setStatus(int x, int y, int playerID){
-        board[x][y] = playerID;
+    public void setStatus(int r, int c, int playerID){
+        board[r][c] = playerID;
     }
     
 
-    public boolean compareStatus(int x,int y, int playerID){
+    public boolean compareStatus(int r,int c, int playerID){
         boolean result = true;
-        if (playerID != board[x][y])
+        if (playerID != board[r][c])
             result = false;
         return result;
     }
