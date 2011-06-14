@@ -28,6 +28,8 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public PlayerList allPlayer;
     private int maxplayer;
     private Registration reg1;
+    private CrashManager cm;
+
 
     public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
@@ -45,18 +47,21 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         me = new Player(Name,freeport);
         maxplayer = 4;
+
     }
 
     public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = n_player;
+
     }
 
     public Node(String Name, int port, int n_player) throws IOException {
         super();
         me = new Player(Name, port);
         maxplayer = n_player;
+
     }
 
     /**
@@ -69,6 +74,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void initializeNode(boolean server) throws RemoteException, AlreadyBoundException {
         Registry register;
         register = LocateRegistry.createRegistry(this.me.getPort());
+
         this.registry = register;
         this.registry.bind("Node",this);
 
@@ -90,7 +96,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
      * @throws RemoteException
      * @throws NotBoundException
      */
-    public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException {
+    public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException {
         int regPort;
         if(server)
             regPort = this.me.getPort();
@@ -103,18 +109,19 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         this.allPlayer = r_reg.register(this.me);
 
+        cm = new CrashManager(this.allPlayer,this.me);
+        cm.initializeCrashManager();
     }
 
     @Override
     public void broadcast(Message msg) throws NotBoundException {
-        if (msg.uuid == this.me.getUuid()) {
-            System.out.println(msg.content);
-        } else {
-            System.out.println(msg.content+"|"+me.getPort());
+        System.out.println(this.allPlayer);
+        if (msg.uuid != this.me.getUuid()) {
             try {
                 getNext().broadcast(msg);
             } catch (RemoteException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                allPlayer = cm.repairAndBroadcastPlayerList();
+                this.broadcast(msg);
             }
         }
     }
@@ -124,18 +131,75 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         try {
             this.getNext().broadcast(msg);
         } catch (RemoteException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            allPlayer = cm.repairAndBroadcastPlayerList();
+            this.startBroadcast(msg);
         }
     }
 
-    public NodeRemote getNext() throws RemoteException, NotBoundException {
+    public NodeRemote getNext() throws NotBoundException, RemoteException {
         Player nextPlayer = this.allPlayer.getNext(this.me);
-        Registry register = LocateRegistry.getRegistry(nextPlayer.getPort());
+        Registry register = null;
 
+        register = LocateRegistry.getRegistry(nextPlayer.getPort());
         NodeRemote rem = (NodeRemote) register.lookup("Node");
-        return rem;
-        }
 
+        return rem;
+    }
+
+    public void sendNext(Object msg) throws NotBoundException {
+        try{
+            getNext().receive(msg);
+        }catch (RemoteException e) {
+                allPlayer = cm.repairAndBroadcastPlayerList();
+                this.sendNext(msg);
+        }
+    }
+
+    public void receive(Object msg) throws RemoteException {
+        System.out.println(msg.toString());
+    }
+
+
+    public void updatePlayerList(int delIndex) throws RemoteException{
+        this.allPlayer.removeElementByPosition(delIndex);
+    }
+
+    /*
+    DIRETTIVE DI CRASH RECOVERY
+     */
+    /*
+    public static void resolveCrash(Node currPlayer) throws NotBoundException {
+        int elim = currPlayer.allPlayer.getPosition(currPlayer.allPlayer.getNext(currPlayer.me));
+        currPlayer.allPlayer.remove(elim);
+        currPlayer.startRebuildPlayerList(elim);
+    }
+
+
+    @Override
+    public void RebuildPlayerList(int toDel, int pUUID) throws NotBoundException {
+        if (pUUID != this.me.getUuid()) {
+            allPlayer.remove(toDel);
+            try {
+                getNext().RebuildPlayerList(toDel, pUUID);
+            } catch (RemoteException e) {
+                resolveCrash(this);
+                this.RebuildPlayerList(toDel,pUUID);
+            }
+        }
+    }
+
+    public void startRebuildPlayerList(int toDel) throws NotBoundException {
+        try {
+            this.getNext().RebuildPlayerList(toDel, this.me.getUuid());
+        } catch (RemoteException e) {
+            resolveCrash(this);
+            this.startRebuildPlayerList(toDel);
+        }
+    }
+    */
+
+
+}
 
 
     /**
@@ -144,7 +208,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
      * @throws RemoteException
      * @throws NotBoundException
      */
-    public String askForIp() throws RemoteException, NotBoundException {
+    /*public String askForIp() throws RemoteException, NotBoundException {
         //Trovo me stesso
         int position = 0;
         for(int i=0;i<this.allPlayer.size();i++){
@@ -161,17 +225,13 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         return rem.replyForIp();
 
 
-    }
+    }   */
 
     /**
      * Restituisco una Stringa con ip:porta
      * @return
      * @throws RemoteException
      */
-    public String replyForIp() throws RemoteException{
+    /*public String replyForIp() throws RemoteException{
         return (me.getIpAddress()+":"+me.getPort()).toString();//me.getUuid().toString();
-    }
-
-
-
-}
+    } *(*/

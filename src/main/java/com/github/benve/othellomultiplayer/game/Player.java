@@ -58,6 +58,7 @@ public class Player implements Serializable{
         this.uuid = UUID.randomUUID().hashCode();
     }
 
+
     public String getName(){
         return this.name.toString();
     }
@@ -73,7 +74,5 @@ public class Player implements Serializable{
     public int getPort(){
         return this.port;
     }
-
-
 
 }

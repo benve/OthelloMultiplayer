@@ -57,18 +57,24 @@ public class gMain {
                 b1 = new Board(10,10);
                 Message msg = new Message();
                 msg.content = "Server";
-                mySelf.startBroadcast(msg);
+
             } else {
-                mySelf.registerToGame(isServer,1234);
+                mySelf.registerToGame(isServer,1755);
                 //mySelf.allPlayer.remove(0);
 
             }
 
-            if(mySelf.allPlayer.getPosition(mySelf.me) == 0)
-                System.out.println(mySelf.me.getPort()+"\t"+"Sono il primo a cominciare");
 
 
-            /*for(int i=0;i<255; i++) {
+
+            for(int i = 0;i<250;i++){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    mySelf.sendNext(mySelf.me.getUuid());
+            }/*for(int i=0;i<255; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -76,7 +82,7 @@ public class gMain {
                 }
                 System.out.println(mySelf.allPlayer);
 
-            }*/
+            } */
 
 
         } else {
