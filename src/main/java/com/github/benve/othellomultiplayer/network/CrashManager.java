@@ -2,13 +2,14 @@ package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.PlayerList;
 import com.github.benve.othellomultiplayer.game.Player;
-
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +27,7 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
 
     public CrashManager(PlayerList allPlayer, Player me) throws RemoteException {
         super();
-        this.allPlayer = (PlayerList) allPlayer.clone();
+        this.allPlayer = PlayerList.getInstance();
         this.me = me;
 
     }
@@ -35,36 +36,37 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         Registry register;
         register = LocateRegistry.getRegistry(this.me.getPort());
 
-
         this.registry = register;
         this.registry.bind("CrashManager",this);
     }
 
-    public PlayerList repairAndBroadcastPlayerList() throws NotBoundException {
+    public void startTimedController(final Node node) {
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    node.sendNext("OK");
+                } catch (NotBoundException e) {
+
+                }
+            }
+        }, 0, 5000);//Secondi ogni quanto fa il controllo del crash
+    }
+
+    public void repairAndBroadcastPlayerList() throws NotBoundException {
         int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 
-        allPlayer.remove(delIndex);
+        allPlayer.removeElementByPosition(delIndex);
         startRebuildPlayerList(delIndex);
-
-        return allPlayer;
     }
 
     public void startRebuildPlayerList(int toDel) throws NotBoundException {
         try {
             this.getNext().RebuildPlayerList(toDel, this.me.getUuid());
         } catch (RemoteException e) {
-            this.allPlayer = repairAndBroadcastPlayerList();
+            repairAndBroadcastPlayerList();
             this.startRebuildPlayerList(toDel);
         }
-    }
-
-    public NodeRemote getMyNode() throws NotBoundException, RemoteException {
-        Registry register = null;
-
-        register = LocateRegistry.getRegistry(me.getPort());
-        NodeRemote rem = (NodeRemote) register.lookup("Node");
-
-        return rem;
     }
 
     public CrashManagerRemote getNext() throws NotBoundException, RemoteException {
@@ -79,11 +81,11 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
 
     public void RebuildPlayerList(int toDel, int pUUID) throws NotBoundException, RemoteException {
         if (pUUID != this.me.getUuid()) {
-            getMyNode().updatePlayerList(toDel);
+            allPlayer.removeElementByPosition(toDel);
             try {
                 getNext().RebuildPlayerList(toDel, pUUID);
             } catch (RemoteException e) {
-                this.allPlayer = repairAndBroadcastPlayerList();
+                repairAndBroadcastPlayerList();
                 this.RebuildPlayerList(toDel,pUUID);
             }
         }

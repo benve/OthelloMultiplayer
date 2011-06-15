@@ -47,21 +47,21 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         me = new Player(Name,freeport);
         maxplayer = 4;
-
+        allPlayer = PlayerList.getInstance();
     }
 
     public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = n_player;
-
+        allPlayer = PlayerList.getInstance();
     }
 
     public Node(String Name, int port, int n_player) throws IOException {
         super();
         me = new Player(Name, port);
         maxplayer = n_player;
-
+        allPlayer = PlayerList.getInstance();
     }
 
     /**
@@ -107,10 +107,11 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
-        this.allPlayer = r_reg.register(this.me);
+        this.allPlayer.addAll(r_reg.register(this.me));
 
         cm = new CrashManager(this.allPlayer,this.me);
         cm.initializeCrashManager();
+        cm.startTimedController(this);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
             try {
                 getNext().broadcast(msg);
             } catch (RemoteException e) {
-                allPlayer = cm.repairAndBroadcastPlayerList();
+                cm.repairAndBroadcastPlayerList();
                 this.broadcast(msg);
             }
         }
@@ -131,7 +132,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         try {
             this.getNext().broadcast(msg);
         } catch (RemoteException e) {
-            allPlayer = cm.repairAndBroadcastPlayerList();
+            cm.repairAndBroadcastPlayerList();
             this.startBroadcast(msg);
         }
     }
@@ -149,8 +150,8 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void sendNext(Object msg) throws NotBoundException {
         try{
             getNext().receive(msg);
-        }catch (RemoteException e) {
-                allPlayer = cm.repairAndBroadcastPlayerList();
+        } catch (RemoteException e) {
+                cm.repairAndBroadcastPlayerList();
                 this.sendNext(msg);
         }
     }
@@ -158,12 +159,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void receive(Object msg) throws RemoteException {
         System.out.println(msg.toString());
     }
-
-
-    public void updatePlayerList(int delIndex) throws RemoteException{
-        this.allPlayer.removeElementByPosition(delIndex);
-    }
-
     /*
     DIRETTIVE DI CRASH RECOVERY
      */

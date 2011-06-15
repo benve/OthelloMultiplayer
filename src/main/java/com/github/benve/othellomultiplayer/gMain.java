@@ -59,7 +59,7 @@ public class gMain {
                 msg.content = "Server";
 
             } else {
-                mySelf.registerToGame(isServer,1755);
+                mySelf.registerToGame(isServer,1234);
                 //mySelf.allPlayer.remove(0);
 
             }
@@ -67,9 +67,9 @@ public class gMain {
 
 
 
-            for(int i = 0;i<250;i++){
+            for(int i = 0;i<5;i++){
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(15000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

@@ -20,8 +20,6 @@ public interface CrashManagerRemote extends Remote {
 
     public void initializeCrashManager() throws RemoteException, AlreadyBoundException;
 
-    public NodeRemote getMyNode() throws NotBoundException, RemoteException;
-
     public CrashManagerRemote getNext() throws NotBoundException, RemoteException;
 
     public void RebuildPlayerList(int toDel, int pUUID) throws NotBoundException, RemoteException;

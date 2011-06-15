@@ -12,7 +12,19 @@ import java.util.List;
  * Time: 10:36 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PlayerList extends LinkedList<Player> implements List<Player>, Serializable{
+public class PlayerList extends LinkedList<Player> implements List<Player>, Serializable {
+
+    private static PlayerList players;
+
+    private PlayerList(){
+        super();
+    }
+
+    public static PlayerList getInstance(){
+        if(players ==null)
+            players = new PlayerList();
+        return players;
+    }
 
     public int getPosition(Player p1){
         for (int i = 0; i < (this.size()); i++) {//Scorro tutti tranne l'ultimo

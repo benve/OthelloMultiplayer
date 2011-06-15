@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     /**
      * Contiene i giocatori registrati
      */
-    private final PlayerList plist;
+    private final LinkedList plist;
     private int regPort;
     /**
      * Numero di giocatori richiesti per la partita
@@ -34,12 +34,12 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     public Registration(int r_port) throws RemoteException, AlreadyBoundException {
         super();
         this.regPort = r_port;
-        this.plist = new PlayerList();
+        this.plist = PlayerList.getInstance();
     }
 
     public Registration(int r_port, int maxplayer) throws RemoteException {
         super();
-        this.plist = new PlayerList();
+        this.plist = PlayerList.getInstance();
         this.maxplayer = maxplayer;
         this.regPort = r_port;
     }
@@ -47,13 +47,14 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     /**
      * Registra un giocatore alla partita, rimane in arresa fino a che il numero di giocatori richiesto
      * per la partita si è regiatrato al gioco
+     *
      * @param pplay
      * @return la lista con i giocatori
      * @throws java.rmi.RemoteException
      * @throws MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
      */
 
-    public PlayerList register(Player pplay) throws MaxPlayerException,RemoteException {
+    public List<Player> register(Player pplay) throws MaxPlayerException,RemoteException {
 
         if (plist.size() >= maxplayer) throw new MaxPlayerException("Numero massimo di giocatori raggiunto");
 
