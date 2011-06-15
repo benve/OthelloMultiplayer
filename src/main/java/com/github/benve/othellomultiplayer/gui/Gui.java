@@ -42,7 +42,7 @@ public class Gui extends PApplet {
 
     public void setup() {
         //Grandezza finestra
-        size(400+cornice*2, 400+cornice*2);
+        size(450+cornice*2, 450+cornice*2);
         frameRate(10);
 
         lato = height / bSize;
@@ -56,7 +56,7 @@ public class Gui extends PApplet {
         //Aggiungo giocatori dandogli pedine casuali
         for (int i = 0; i < nplayers; i++) {
             pls.add(i, new Player(i));
-            for (int j = 0; j < (6 - nplayers); j++) {
+            for (int j = 0; j < (5 - nplayers); j++) {
                 int x = PApplet.parseInt(random(0, bSize - 1));
                 int y = PApplet.parseInt(random(0, bSize - 1));
                 while (board.board[x][y] != -1) {
@@ -149,29 +149,40 @@ public class Gui extends PApplet {
                     case 'p':
                         println("Ciao!");
                         break;
+                    case 'a':
+                        board.setStatus(mouseY / lato, mouseX / lato, currP);
+                        break;
+                    case 'd':
+                        board.setStatus(mouseY / lato, mouseX / lato, -1);
+                        break;
                 }
             }
         }
     }
 
-    public void mousePressed() {
+    public void mouseClicked() {
 
         int nx = mouseX / lato;
         int ny = mouseY / lato;
 
-        if (logic.canColonize(board,ny,nx,currP)) {
+        boolean[][] allr = logic.getSingleReversi(board, ny, nx, currP);
+        if (allr[ny][nx]) {
+            for (int r = 0; r < allr.length; r++) {
+                println();
+                for (int c = 0; c < allr[r].length; c++) {
+                    print((allr[r][c] ? "T" : "_") + "\t");
+                    if (allr[r][c])
+                        board.setStatus(r, c, currP);
+                }
+            }
+            println();
+            currP = (currP + 1) % pls.size();
+            println("Cambio Giocatore: " + currP);
+        } else if (logic.canColonize(board, ny, nx, currP)) {
             board.setStatus(ny, nx, currP);
-            currP = (currP + 1) %  pls.size();
-            println("Cambio Giocatore: "+currP);
-        } else {
-            boolean[][] allr = logic.getAllReversi(board, currP);
-            if (allr[ny][nx]) {
-                board.setStatus(ny, nx, currP);
-                currP = (currP + 1) %  pls.size();
-                println("Cambio Giocatore: "+currP);
-            } else println("Mossa non consentita");
-        }
-
+            currP = (currP + 1) % pls.size();
+            println("Cambio Giocatore: " + currP);
+        } else println("Mossa non consentita");
 
     }
 
