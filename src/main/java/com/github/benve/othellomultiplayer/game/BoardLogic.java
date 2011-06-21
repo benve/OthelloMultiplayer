@@ -1,5 +1,10 @@
 package com.github.benve.othellomultiplayer.game;
 
+import org.omg.stub.java.rmi._Remote_Stub;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  * User: lemad85
@@ -386,6 +391,38 @@ public class BoardLogic {
             }
             System.out.print("\n");
         }
+    }
+
+    /**
+     * Ritorna il giocatore che ha più pedine
+     * @param b
+     * @return
+     */
+    public int getWinner(Board b) {
+        HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
+
+        for(int r=0;r<b.getRow();r++) {
+            for(int c=0;c<b.getColumn();c++) {
+                int p = b.getStatus(r,c);
+                if (p == -1) return -1;
+                Integer ra = count.get(p);
+                if (ra == null)
+                    ra = 0;
+                ra = ra + 1;
+                count.put(b.getStatus(r,c), ra);
+            }
+        }
+
+        int max = 0;
+        int winner = -1;
+        for (Map.Entry<Integer, Integer> en : count.entrySet()) {
+            if (en.getValue() > max) {
+                max = en.getValue();
+                winner = en.getKey();
+            }
+        }
+
+        return winner;
     }
 
 

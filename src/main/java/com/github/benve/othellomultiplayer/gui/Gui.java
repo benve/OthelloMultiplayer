@@ -25,11 +25,15 @@ public class Gui extends PApplet {
     final BoardLogic logic = BoardLogic.getInstance();
 
     //lato in caselle della scacchiera
-    final int bSize = 8;
+    final int bSize = 4;
     //Lato in pixel della casella
     int lato;
 
     int nplayers = 4;
+
+    //Vincitore, -1 se ancora non impostato
+    int winner = -1;
+
 
     final ArrayList<Player> pls = new ArrayList<Player>(nplayers);
     final Board board = new Board(bSize, bSize);
@@ -48,8 +52,8 @@ public class Gui extends PApplet {
         lato = height / bSize;
         smooth();
 
-        //PFont myFont = loadFont("ArialMT-48.vlw");
-        //textFont(myFont, 12);
+        PFont myFont = loadFont("Ziggurat-HTF-Black-32.vlw");
+        textFont(myFont, 32);
 
         ellipseMode(CORNER);
 
@@ -75,7 +79,11 @@ public class Gui extends PApplet {
 
         stroke(255);
 
-        if (board != null) {
+        if (winner > -1) {
+            fill(pls.get(winner).c);
+            text(winner, height/2, width/2);
+
+        } else if (board != null) {
 
             boolean[][] reversi = null;
             boolean[][] colonize = null;
@@ -105,30 +113,29 @@ public class Gui extends PApplet {
                             noFill();
                             strokeWeight(3);
                             ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
+                            //Label
+                            fill(pls.get(currP).c);
+                            text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                         } else if (colonize != null && colonize[j][i]) {
                             stroke(pls.get(currP).c);
                             noFill();
                             strokeWeight(3);
                             rect((i * lato)+5, (j * lato)+5, lato-10, lato-10);
+                            //Label
+                            fill(pls.get(currP).c);
+                            text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                         }
-                        /*if (board.isValid(i, j, currP) != VOID) {//E' una mossa consentita per il giocatore
-                         fill(pls.get(currP).c);
-                         text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
-                       } */
-
                     } else {//Cassella con una pedina
                         fill(pls.get(board.getStatus(j, i)).c);
                         noStroke();
                         ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
 
                         //label player
-                        //fill(0);
-                        //text(board.getStatus(i,j), (i*lato)+lato/2, (j*lato)+lato/2);
-
+                        fill(0);
+                        text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                     }
                 }
             }
-
         }
     }
 
@@ -165,6 +172,8 @@ public class Gui extends PApplet {
         int nx = mouseX / lato;
         int ny = mouseY / lato;
 
+        print(nx+"."+ny+" ");flush();
+
         boolean[][] allr = logic.getSingleReversi(board, ny, nx, currP);
         if (allr[ny][nx]) {
             for (int r = 0; r < allr.length; r++) {
@@ -177,13 +186,14 @@ public class Gui extends PApplet {
             }
             println();
             currP = (currP + 1) % pls.size();
-            println("Cambio Giocatore: " + currP);
+            println("Reversi! Giocatore: " + currP);
         } else if (logic.canColonize(board, ny, nx, currP)) {
             board.setStatus(ny, nx, currP);
             currP = (currP + 1) % pls.size();
-            println("Cambio Giocatore: " + currP);
-        } else println("Mossa non consentita");
+            println("Colonize! Giocatore: " + currP);
+        } //else println("Mossa non consentita");
 
+        winner = logic.getWinner(board);
     }
 
     static public void main(String args[]) {

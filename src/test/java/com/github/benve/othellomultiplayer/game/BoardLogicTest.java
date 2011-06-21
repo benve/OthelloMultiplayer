@@ -225,6 +225,23 @@ public class BoardLogicTest {
 
     }
 
+    @Test
+    public void testGetWinner() {
+
+        assertEquals(-1, boardLogic.getWinner(board));
+
+        board.setBoard(new int[][]{
+                {P1, P1, P1, P3},
+                {P1,  P3,  P1, P3},
+                {P1,  P1,  P1, P1},
+                {P1, P1,  P1, P2}
+        });
+
+
+        assertEquals(P1, boardLogic.getWinner(board));
+
+    }
+
     /*@After
     public void tearDown() throws Exception {
 
