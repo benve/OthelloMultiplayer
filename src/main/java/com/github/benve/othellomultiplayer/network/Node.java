@@ -1,7 +1,10 @@
 package com.github.benve.othellomultiplayer.network;
 
+import com.github.benve.othellomultiplayer.game.Board;
+import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
+import sun.rmi.runtime.NewThreadAction;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -29,12 +32,14 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     private int maxplayer;
     private Registration reg1;
     private CrashManager cm;
-
+    private Board b;
 
     public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = 3;
+        b = new Board();
+        allPlayer = PlayerList.getInstance();
     }
 
     public Node(String Name) throws IOException {
@@ -48,6 +53,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(Name,freeport);
         maxplayer = 4;
         allPlayer = PlayerList.getInstance();
+        b = new Board();
     }
 
     public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
@@ -55,6 +61,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(n_port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
+        b = new Board();
     }
 
     public Node(String Name, int port, int n_player) throws IOException {
@@ -62,6 +69,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(Name, port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
+        b = new Board();
     }
 
     /**
@@ -107,16 +115,19 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
-        this.allPlayer.addAll(r_reg.register(this.me));
+        if (server)
+            r_reg.register(this.me);
+        else
+            this.allPlayer.addAll(r_reg.register(this.me));
 
-        cm = new CrashManager(this.allPlayer,this.me);
+        cm = new CrashManager(this.me);
         cm.initializeCrashManager();
         cm.startTimedController(this);
     }
 
     @Override
     public void broadcast(Message msg) throws NotBoundException {
-        System.out.println(this.allPlayer);
+        System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
                 getNext().broadcast(msg);
@@ -157,8 +168,27 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     }
 
     public void receive(Object msg) throws RemoteException {
-        System.out.println(msg.toString());
+        int i = 1;
+        //System.out.println(msg.toString());
     }
+
+
+    public void actionToken(int currPlayer) throws NotBoundException {
+        try{
+            if(currPlayer == me.getUuid()){
+                this.startBroadcast(new Message(currPlayer));
+                Thread.sleep(1000);
+                getNext().actionToken(allPlayer.getNext(me).getUuid());
+            }
+        } catch (RemoteException e) {
+                cm.repairAndBroadcastPlayerList();
+                this.actionToken(currPlayer);
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
     /*
     DIRETTIVE DI CRASH RECOVERY
      */

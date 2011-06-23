@@ -35,6 +35,7 @@ public class PlayerList extends LinkedList<Player> implements List<Player>, Seri
         return -1;
     }
 
+
     public Player getNext(Player p1){
         for (int i = 0; i < (this.size()-1); i++) {//Scorro tutti tranne l'ultimo
             if (this.get(i).getUuid() == p1.getUuid()) {

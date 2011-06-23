@@ -25,7 +25,7 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
     private Registry registry;
 
 
-    public CrashManager(PlayerList allPlayer, Player me) throws RemoteException {
+    public CrashManager(Player me) throws RemoteException {
         super();
         this.allPlayer = PlayerList.getInstance();
         this.me = me;
@@ -46,14 +46,21 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
             public void run() {
                 try {
                     node.sendNext("OK");
+                    return;
                 } catch (NotBoundException e) {
 
                 }
             }
-        }, 0, 5000);//Secondi ogni quanto fa il controllo del crash
+        }, 0, 2000);//Secondi ogni quanto fa il controllo del crash
     }
 
     public void repairAndBroadcastPlayerList() throws NotBoundException {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+
+        System.out.println(stackTraceElements[stackTraceElements.length-1].getMethodName());
+
+
+
         int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 
         allPlayer.removeElementByPosition(delIndex);
@@ -89,6 +96,20 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
                 this.RebuildPlayerList(toDel,pUUID);
             }
         }
+    }
+
+    public void ping() throws NotBoundException {
+        try{
+            getNext().pong();
+        } catch (RemoteException e) {
+                this.repairAndBroadcastPlayerList();
+                //this.ping();
+        }
+    }
+
+    public boolean pong() throws RemoteException {
+        //System.out.println(this.allPlayer.toString());
+        return true;
     }
 
 }

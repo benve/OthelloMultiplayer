@@ -55,26 +55,30 @@ public class gMain {
             if(isServer) {
                 mySelf.registerToGame(isServer,0);
                 b1 = new Board(10,10);
-                Message msg = new Message();
-                msg.content = "Server";
+                /*Message msg = new Message();
+                msg.content = "Server";*/
 
             } else {
-                mySelf.registerToGame(isServer,1234);
+                mySelf.registerToGame(isServer,1755);
                 //mySelf.allPlayer.remove(0);
 
             }
 
 
+            if(mySelf.allPlayer.getPosition(mySelf.me) == 0){
+                mySelf.actionToken(mySelf.me.getUuid());
+            }
 
-
-            for(int i = 0;i<5;i++){
+            /*for(int i = 0;i<5;i++){
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                     mySelf.sendNext(mySelf.me.getUuid());
-            }/*for(int i=0;i<255; i++) {
+            }*/
+
+            /*for(int i=0;i<255; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

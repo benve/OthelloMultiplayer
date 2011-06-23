@@ -23,4 +23,6 @@ public interface CrashManagerRemote extends Remote {
     public CrashManagerRemote getNext() throws NotBoundException, RemoteException;
 
     public void RebuildPlayerList(int toDel, int pUUID) throws NotBoundException, RemoteException;
+
+    public boolean pong() throws RemoteException;
 }

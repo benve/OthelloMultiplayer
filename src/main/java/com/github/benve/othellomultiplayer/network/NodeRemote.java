@@ -25,4 +25,5 @@ public interface NodeRemote extends Remote {
 
     public void receive(Object msg) throws RemoteException;
 
+    public void actionToken(int currPlayer) throws NotBoundException, RemoteException;
 }

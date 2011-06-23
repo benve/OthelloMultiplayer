@@ -22,7 +22,8 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     /**
      * Contiene i giocatori registrati
      */
-    private final LinkedList plist;
+    //private final LinkedList plist;
+    private PlayerList plist;
     private int regPort;
     /**
      * Numero di giocatori richiesti per la partita
