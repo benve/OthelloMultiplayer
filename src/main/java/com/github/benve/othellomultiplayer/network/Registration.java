@@ -2,6 +2,7 @@ package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
+import sun.rmi.runtime.NewThreadAction;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -22,8 +23,8 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     /**
      * Contiene i giocatori registrati
      */
-    //private final LinkedList plist;
-    private PlayerList plist;
+    private final LinkedList plist;
+    //private PlayerList plist;
     private int regPort;
     /**
      * Numero di giocatori richiesti per la partita
@@ -35,12 +36,12 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
     public Registration(int r_port) throws RemoteException, AlreadyBoundException {
         super();
         this.regPort = r_port;
-        this.plist = PlayerList.getInstance();
+        this.plist = new LinkedList();//PlayerList.getInstance();
     }
 
     public Registration(int r_port, int maxplayer) throws RemoteException {
         super();
-        this.plist = PlayerList.getInstance();
+        this.plist = new LinkedList();//PlayerList.getInstance();
         this.maxplayer = maxplayer;
         this.regPort = r_port;
     }
