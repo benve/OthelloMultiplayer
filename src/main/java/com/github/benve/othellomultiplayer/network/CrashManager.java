@@ -24,12 +24,12 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
     private Player me;
     private Registry registry;
 
+    private Timer timer;
 
     public CrashManager(Player me) throws RemoteException {
         super();
         this.allPlayer = PlayerList.getInstance();
         this.me = me;
-
     }
 
     public void initializeCrashManager() throws RemoteException, AlreadyBoundException {
@@ -40,31 +40,51 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         this.registry.bind("CrashManager",this);
     }
 
-    public void startTimedController(final Node node) {
-        (new Timer()).schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    node.sendNext("OK");
-                    return;
-                } catch (NotBoundException e) {
+    public void stopTimerContreller() {
+        timer.cancel();
 
-                }
-            }
-        }, 0, 2000);//Secondi ogni quanto fa il controllo del crash
+        timer = null;
+        System.gc();
     }
 
-    public void repairAndBroadcastPlayerList() throws NotBoundException {
+    public void startTimedController() {
+        if (timer == null) {
+            this.timer = new Timer();
+
+            timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            try {
+                                ping();
+                                System.err.println("\t" + this.toString() + "________" + this.scheduledExecutionTime());
+                            } catch (NotBoundException e) {
+
+                            }
+                        }
+                    }, 1000, 5000);//Secondi ogni quanto fa il controllo del crash
+        } else {
+            System.out.println("TimerController già acceso! ");
+        }
+    }
+
+    synchronized public void repairAndBroadcastPlayerList() throws NotBoundException {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
         System.out.println(stackTraceElements[stackTraceElements.length-1].getMethodName());
 
+        try{
+            getNext().pong();
+        } catch (RemoteException e) {
+            this.stopTimerContreller();
 
+            int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 
-        int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
+            allPlayer.removeElementByPosition(delIndex);
+            startRebuildPlayerList(delIndex);
 
-        allPlayer.removeElementByPosition(delIndex);
-        startRebuildPlayerList(delIndex);
+            this.startTimedController();
+        }
+
     }
 
     public void startRebuildPlayerList(int toDel) throws NotBoundException {

@@ -20,7 +20,7 @@ public class PlayerList extends LinkedList<Player> implements List<Player>, Seri
         super();
     }
 
-    public static PlayerList getInstance(){
+    public static PlayerList getInstance() {
         if(players ==null)
             players = new PlayerList();
         return players;
@@ -37,6 +37,17 @@ public class PlayerList extends LinkedList<Player> implements List<Player>, Seri
 
 
     public Player getNext(Player p1){
+
+        int sec = 0;
+        while (this.size() <=0 && sec <=10) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) { e.printStackTrace(); }
+            sec++;
+        }
+
+        if (this.size() <= 0) return null;
+
         for (int i = 0; i < (this.size()-1); i++) {//Scorro tutti tranne l'ultimo
             if (this.get(i).getUuid() == p1.getUuid()) {
                 return this.get(i+1);

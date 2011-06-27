@@ -59,7 +59,7 @@ public class gMain {
                 msg.content = "Server";*/
 
             } else {
-                mySelf.registerToGame(isServer,1755);
+                mySelf.registerToGame(isServer,1234);
                 //mySelf.allPlayer.remove(0);
 
             }

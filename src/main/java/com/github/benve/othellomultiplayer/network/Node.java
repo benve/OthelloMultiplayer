@@ -115,14 +115,15 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
-        if (server)
-            r_reg.register(this.me);
-        else
+        try {
             this.allPlayer.addAll(r_reg.register(this.me));
+        } catch (CantAddPlayerException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         cm = new CrashManager(this.me);
         cm.initializeCrashManager();
-        cm.startTimedController(this);
+        cm.startTimedController();
     }
 
     @Override
@@ -177,7 +178,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         try{
             if(currPlayer == me.getUuid()){
                 this.startBroadcast(new Message(currPlayer));
-                Thread.sleep(1000);
+                Thread.sleep(5000);
                 getNext().actionToken(allPlayer.getNext(me).getUuid());
             }
         } catch (RemoteException e) {
