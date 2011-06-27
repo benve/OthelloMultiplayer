@@ -15,7 +15,7 @@ import java.util.List;
  * Time: 13.19
  */
 public interface RegistrationRemote extends Remote {
-    List<Player> register(Player pplay) throws MaxPlayerException,RemoteException;
+    List<Player> register(Player pplay) throws MaxPlayerException, RemoteException, CantAddPlayerException;
 
     void instaceRegistration() throws RemoteException, AlreadyBoundException;
 }

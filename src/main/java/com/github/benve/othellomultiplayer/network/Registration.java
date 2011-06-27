@@ -56,11 +56,14 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
      * @throws MaxPlayerException quando ho già raggiunto il numero massimo di giocatori
      */
 
-    public List<Player> register(Player pplay) throws MaxPlayerException,RemoteException {
+    public List<Player> register(Player pplay) throws MaxPlayerException, RemoteException, CantAddPlayerException {
 
         if (plist.size() >= maxplayer) throw new MaxPlayerException("Numero massimo di giocatori raggiunto");
 
-        plist.add(pplay);
+        if(plist.add(pplay))
+            System.out.println("Aggiunto "+pplay.getUuid());
+        else
+            throw new CantAddPlayerException("Impossibile caricare il giocatore "+pplay.getUuid());
 
         while(plist.size() != maxplayer) {
             try {
