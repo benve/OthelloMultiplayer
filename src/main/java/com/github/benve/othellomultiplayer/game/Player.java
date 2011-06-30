@@ -5,8 +5,8 @@ import com.github.benve.othellomultiplayer.utils.NetUtils;
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.UUID;
+
 //import static com.github.benve.othellomultiplayer.utils.NetUtils.getHostAddress;
 
 /**
@@ -19,6 +19,11 @@ import java.util.UUID;
  */
 public class Player implements Serializable{
     private String name;
+
+    /**
+     * Colore
+     */
+    public float[] c = new float[]{(float) Math.random() * 255,(float) Math.random() * 255,(float) Math.random() * 255};
 
     /**
      * Porta sulla quale il giocatore sta in ascolto

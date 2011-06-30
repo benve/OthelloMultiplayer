@@ -2,41 +2,35 @@ package com.github.benve.othellomultiplayer.gui;
 
 import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
-import processing.core.*;
-
-import java.util.*;
+import com.github.benve.othellomultiplayer.game.PlayerList;
+import com.github.benve.othellomultiplayer.network.Node;
+import com.github.benve.othellomultiplayer.utils.NetUtils;
+import processing.core.PApplet;
+import processing.core.PFont;
 
 public class Gui extends PApplet {
 
-
-    class Player {
-
-        int index;
-
-        int c;
-
-        public Player(int idx) {
-            index = idx;
-            c = color(random(0, 255), random(0, 255), random(0, 255));
-        }
-
+    //color(random(0, 255), random(0, 255), random(0, 255));
+    public int color(float[] color) {
+        //return color(random(0, 255), random(0, 255), random(0, 255));
+        return color(color[0], color[1], color[2]);
     }
 
     final BoardLogic logic = BoardLogic.getInstance();
 
     //lato in caselle della scacchiera
-    final int bSize = 4;
+    int bSize;
     //Lato in pixel della casella
     int lato;
 
-    int nplayers = 4;
+    int nplayers;
 
     //Vincitore, -1 se ancora non impostato
     int winner = -1;
 
 
-    final ArrayList<Player> pls = new ArrayList<Player>(nplayers);
-    final Board board = new Board(bSize, bSize);
+    PlayerList pls = null;
+    Board board = null;
 
     //Giocatore del turno corrente
     int currP = 0;
@@ -48,28 +42,14 @@ public class Gui extends PApplet {
         //Grandezza finestra
         size(450+cornice*2, 450+cornice*2);
         frameRate(10);
+        background(100);
 
-        lato = height / bSize;
         smooth();
 
         PFont myFont = loadFont("Ziggurat-HTF-Black-32.vlw");
         textFont(myFont, 32);
 
         ellipseMode(CORNER);
-
-        //Aggiungo giocatori dandogli pedine casuali
-        for (int i = 0; i < nplayers; i++) {
-            pls.add(i, new Player(i));
-            for (int j = 0; j < (5 - nplayers); j++) {
-                int x = PApplet.parseInt(random(0, bSize - 1));
-                int y = PApplet.parseInt(random(0, bSize - 1));
-                while (board.board[x][y] != -1) {
-                    x = PApplet.parseInt(random(0, bSize - 1));
-                    y = PApplet.parseInt(random(0, bSize - 1));
-                }
-                board.board[x][y] = i;
-            }
-        }
 
     }
 
@@ -80,8 +60,8 @@ public class Gui extends PApplet {
         stroke(255);
 
         if (winner > -1) {
-            fill(pls.get(winner).c);
-            text(winner, height/2, width/2);
+            fill(color(pls.get(winner).c));
+            text("The Winner is \n"+winner+" !!", height/2, width/2);
 
         } else if (board != null) {
 
@@ -109,24 +89,24 @@ public class Gui extends PApplet {
                     //println("Casella "+i+" "+j);
                     if (board.getStatus(j, i) == -1) {
                         if (reversi != null && reversi[j][i]) {
-                            stroke(pls.get(currP).c);
+                            stroke(color(pls.get(currP).c));
                             noFill();
                             strokeWeight(3);
                             ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
                             //Label
-                            fill(pls.get(currP).c);
+                            fill(color(pls.get(currP).c));
                             text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                         } else if (colonize != null && colonize[j][i]) {
-                            stroke(pls.get(currP).c);
+                            stroke(color(pls.get(currP).c));
                             noFill();
                             strokeWeight(3);
                             rect((i * lato)+5, (j * lato)+5, lato-10, lato-10);
                             //Label
-                            fill(pls.get(currP).c);
+                            fill(color(pls.get(currP).c));
                             text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                         }
                     } else {//Cassella con una pedina
-                        fill(pls.get(board.getStatus(j, i)).c);
+                        fill(color(pls.get(board.getStatus(j, i)).c));
                         noStroke();
                         ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
 
@@ -135,6 +115,14 @@ public class Gui extends PApplet {
                         text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
                     }
                 }
+            }
+        } else {//Iniziallizzazione Board
+            if (node != null && node.b != null) {
+                board = node.b;
+                pls = node.allPlayer;
+                nplayers = pls.size();
+                bSize = board.side;
+                lato = height / bSize;
             }
         }
     }
@@ -196,7 +184,60 @@ public class Gui extends PApplet {
         winner = logic.getWinner(board);
     }
 
+    static Node node;
+
+
     static public void main(String args[]) {
-        PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
+
+        try {
+
+            boolean isServer = false;
+            BoardLogic bl1 = BoardLogic.getInstance();
+            Board b1;
+            int port;
+
+            NetUtils n = NetUtils.getInstance();
+
+            //n.getPublicIP().toString());
+            if (args.length >= 3) {
+                port = Integer.parseInt(args[0]);
+
+                System.out.println(port + "\t" + n.getHostAddress());
+
+                node = new Node(port, Integer.parseInt(args[1]));
+                if (Integer.parseInt(args[2]) == 1) {
+                    isServer = true;
+                }
+
+                node.initializeNode(isServer);
+
+                System.out.println(node.me.getPort() + "\t" + node.me.getUuid() + "|" + node.me.getPort());
+
+                if (isServer) {
+                    node.registerToGame(isServer, 0);
+                } else {
+                    node.registerToGame(isServer, 1234);
+                }
+
+                PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
+
+
+                if (node.allPlayer.getPosition(node.me) == 0) {
+                    node.startGame();
+                    //node.actionToken(node.me.getUuid());
+                }
+
+
+            } else {
+                System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
+                        "con 1 viene istanziato il registro dei giocatori");
+
+            }
+
+        } catch (Throwable e) {
+            //Exception Funnel
+            e.printStackTrace();
+        }
+
     }
 }

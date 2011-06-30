@@ -9,8 +9,7 @@ import java.io.Serializable;
 public class Board implements Serializable{
 
     public int [][] board;
-    public final int row;
-    public final int column;
+    public final int side;
 
     /**
      * Giocatore corrente
@@ -19,27 +18,41 @@ public class Board implements Serializable{
 
     //Solo per test
     protected void setBoard(int [][] b) {
-        assert b.length == column;
-        assert b[0].length == row;
+        assert b.length == side;
+        assert b[0].length == side;
         board = b;
     }
     
     public Board(){
-        board = new int[10][10];
-        row = 10;
-        column = 10;
-        for(int i=0;i<10;i++)
-            for(int j=0;j<10;j++)
+        side = 8;
+        board = new int[side][side];
+
+        for(int i=0;i<side;i++)
+            for(int j=0;j<side;j++)
                 board[i][j] = -1;
     }
             
-    public Board(int x, int y){
-        column = x;
-        row = y;
-        board = new int[x][y];
-        for(int i=0;i<x;i++)
-            for(int j=0;j<y;j++)
+    public Board(int side){
+        this.side = side;
+        board = new int[side][side];
+        for(int i=0;i<side;i++)
+            for(int j=0;j<side;j++)
                 board[i][j] = -1;
+    }
+
+    public void initRandomBoard(int nplayers) {
+           //Aggiungo giocatori dandogli pedine casuali
+        for (int i = 0; i < nplayers; i++) {
+            for (int j = 0; j < (5 - nplayers); j++) {
+                int x = (int) (Math.random()*(side - 1));
+                int y = (int) (Math.random()*(side - 1));
+                while (board[x][y] != -1) {
+                    x = (int) (Math.random()*(side - 1));
+                    y = (int) (Math.random()*(side - 1));
+                }
+                board[x][y] = i;
+            }
+        }
     }
     
     public int getStatus(int r,int c){
@@ -59,11 +72,11 @@ public class Board implements Serializable{
     }
 
     public int getRow(){
-        return this.row;
+        return this.side;
     }
 
     public int getColumn(){
-        return this.column;
+        return this.side;
     }
 
 

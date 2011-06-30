@@ -2,19 +2,14 @@ package com.github.benve.othellomultiplayer;
 
 import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
-import com.github.benve.othellomultiplayer.game.Player;
+import com.github.benve.othellomultiplayer.gui.Gui;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-import com.github.benve.othellomultiplayer.network.Message;
 import com.github.benve.othellomultiplayer.network.Node;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
 
-import javax.naming.SizeLimitExceededException;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,20 +49,21 @@ public class gMain {
 
             if(isServer) {
                 mySelf.registerToGame(isServer,0);
-                b1 = new Board(10,10);
-                /*Message msg = new Message();
-                msg.content = "Server";*/
-
             } else {
                 mySelf.registerToGame(isServer,1234);
-                //mySelf.allPlayer.remove(0);
-
             }
+
+            Gui g = new Gui();
+
 
 
             if(mySelf.allPlayer.getPosition(mySelf.me) == 0){
                 mySelf.actionToken(mySelf.me.getUuid());
             }
+
+            //PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
+
+
 
             /*for(int i = 0;i<5;i++){
                     try {

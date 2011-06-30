@@ -1,10 +1,8 @@
 package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.Board;
-import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
-import sun.rmi.runtime.NewThreadAction;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -32,13 +30,12 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     private int maxplayer;
     private Registration reg1;
     private CrashManager cm;
-    private Board b;
+    public Board b;
 
     public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = 3;
-        b = new Board();
         allPlayer = PlayerList.getInstance();
     }
 
@@ -53,7 +50,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(Name,freeport);
         maxplayer = 4;
         allPlayer = PlayerList.getInstance();
-        b = new Board();
     }
 
     public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
@@ -61,7 +57,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(n_port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
-        b = new Board();
     }
 
     public Node(String Name, int port, int n_player) throws IOException {
@@ -69,7 +64,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(Name, port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
-        b = new Board();
     }
 
     /**
@@ -188,6 +182,16 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    /**
+     * Inizia il gioco
+     * Se il nodo è il primo della lista crea la board
+     * e la passa agli altri
+     */
+    public void startGame() {
+        b = new Board();
+        b.initRandomBoard(allPlayer.size());
     }
 
     /*

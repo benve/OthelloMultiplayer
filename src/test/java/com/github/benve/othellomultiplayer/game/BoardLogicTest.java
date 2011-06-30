@@ -1,14 +1,9 @@
 package com.github.benve.othellomultiplayer.game;
 
-import com.sun.corba.se.spi.presentation.rmi.IDLNameTranslator;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import sun.security.krb5.internal.crypto.Aes256CtsHmacSha1EType;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +23,7 @@ public class BoardLogicTest {
 
     @Before
     public void setUp() throws Exception {
-        board = new Board(4, 4);
+        board = new Board(4);
 
         board.setBoard(new int[][]{
                 {-1, -1, -1, -1},
@@ -163,7 +158,7 @@ public class BoardLogicTest {
 
     @Test
     public void testMoveReversi() throws Exception {
-        Board board2 = new Board(4,4);
+        Board board2 = new Board(4);
 
         board2.setBoard(new int[][]{
                 {P2, P2,   P1, -1},
@@ -196,7 +191,7 @@ public class BoardLogicTest {
     public void testHasColonize() throws Exception {
         assertTrue(boardLogic.hasColonize(board, P1));
 
-        Board board2 = new Board(4,4);
+        Board board2 = new Board(4);
 
         board2.setBoard(new int[][]{
                 {P2, P2, P1, -1},
