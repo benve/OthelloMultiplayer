@@ -1,7 +1,6 @@
 package com.github.benve.othellomultiplayer.game;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +32,14 @@ public class PlayerList extends LinkedList<Player> implements List<Player>, Seri
             }
         }
         return -1;
+    }
+
+    public Player getByUUID(int uuid) {
+        for (Player pl : players) {
+            if (pl.getUuid() == uuid)
+                return pl;
+        }
+        return null;
     }
 
 

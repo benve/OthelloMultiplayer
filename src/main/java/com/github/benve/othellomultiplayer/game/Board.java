@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * @author lemad85
  */
-public class Board implements Serializable{
+public class Board implements Serializable {
 
     public int [][] board;
     public final int side;
@@ -40,17 +40,17 @@ public class Board implements Serializable{
                 board[i][j] = -1;
     }
 
-    public void initRandomBoard(int nplayers) {
+    public void initRandomBoard(PlayerList playerList) {
            //Aggiungo giocatori dandogli pedine casuali
-        for (int i = 0; i < nplayers; i++) {
-            for (int j = 0; j < (5 - nplayers); j++) {
+        for (int i = 0; i < playerList.size(); i++) {
+            for (int j = 0; j < (5 - playerList.size()); j++) {
                 int x = (int) (Math.random()*(side - 1));
                 int y = (int) (Math.random()*(side - 1));
                 while (board[x][y] != -1) {
                     x = (int) (Math.random()*(side - 1));
                     y = (int) (Math.random()*(side - 1));
                 }
-                board[x][y] = i;
+                board[x][y] = playerList.get(i).getUuid();
             }
         }
     }

@@ -125,6 +125,11 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
+
+                if (msg.content instanceof Board) {
+                    this.b = (Board) msg.content;
+                }
+
                 getNext().broadcast(msg);
             } catch (RemoteException e) {
                 cm.repairAndBroadcastPlayerList();
@@ -189,9 +194,12 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
      * Se il nodo è il primo della lista crea la board
      * e la passa agli altri
      */
-    public void startGame() {
+    public void startGame() throws NotBoundException {
         b = new Board();
-        b.initRandomBoard(allPlayer.size());
+        b.initRandomBoard(allPlayer);
+        Message msg = new Message(me.getUuid());
+        msg.content = b;
+        startBroadcast(msg);
     }
 
     /*

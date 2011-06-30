@@ -4,6 +4,7 @@ import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.PlayerList;
 import com.github.benve.othellomultiplayer.network.Node;
+import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -68,10 +69,12 @@ public class Gui extends PApplet {
             boolean[][] reversi = null;
             boolean[][] colonize = null;
 
-            if (logic.hasReversi(board, currP)) {
-                reversi = logic.getAllReversi(board, currP);
-            } else if (logic.hasColonize(board, currP)) {
-                colonize = logic.getAllColonize(board, currP);
+            Player player = pls.get(currP);
+
+            if (logic.hasReversi(board, player.getUuid())) {
+                reversi = logic.getAllReversi(board, player.getUuid());
+            } else if (logic.hasColonize(board, player.getUuid())) {
+                colonize = logic.getAllColonize(board, player.getUuid());
             }
 
             //Disegno righe
@@ -88,31 +91,33 @@ public class Gui extends PApplet {
                 for (int j = 0; j < bSize; j++) {
                     //println("Casella "+i+" "+j);
                     if (board.getStatus(j, i) == -1) {
-                        if (reversi != null && reversi[j][i]) {
-                            stroke(color(pls.get(currP).c));
-                            noFill();
-                            strokeWeight(3);
-                            ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
-                            //Label
-                            fill(color(pls.get(currP).c));
-                            text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
-                        } else if (colonize != null && colonize[j][i]) {
-                            stroke(color(pls.get(currP).c));
-                            noFill();
-                            strokeWeight(3);
-                            rect((i * lato)+5, (j * lato)+5, lato-10, lato-10);
-                            //Label
-                            fill(color(pls.get(currP).c));
-                            text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
+                        if (player.getUuid() == node.me.getUuid()) {
+                            if (reversi != null && reversi[j][i]) {//Mossa possibile
+                                stroke(color(player.c));
+                                noFill();
+                                strokeWeight(3);
+                                ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
+                                //Label
+                                fill(color(player.c));
+                                text(currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                            } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
+                                stroke(color(player.c));
+                                noFill();
+                                strokeWeight(3);
+                                rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
+                                //Label
+                                fill(color(player.c));
+                                text(currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                            }
                         }
                     } else {//Cassella con una pedina
-                        fill(color(pls.get(board.getStatus(j, i)).c));
+                        fill(color(pls.getByUUID(board.getStatus(j, i)).c));
                         noStroke();
-                        ellipse((i * lato)+5, (j * lato)+5, lato-10, lato-10);
+                        ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
 
                         //label player
                         fill(0);
-                        text(currP, (i*lato)+lato/2, (j*lato)+lato/2);
+                        text(currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
                     }
                 }
             }
@@ -142,7 +147,7 @@ public class Gui extends PApplet {
             if (intk == -1) {
                 switch (key) {
                     case 'p':
-                        println("Ciao!");
+                        println("Ciao "+currP+"  UUID:"+pls.get(currP).getUuid()+"  ME:"+node.me.getUuid());
                         break;
                     case 'a':
                         board.setStatus(mouseY / lato, mouseX / lato, currP);
@@ -157,31 +162,36 @@ public class Gui extends PApplet {
 
     public void mouseClicked() {
 
-        int nx = mouseX / lato;
-        int ny = mouseY / lato;
+        if (pls.get(currP).getUuid() == node.me.getUuid()) {
 
-        print(nx+"."+ny+" ");flush();
+            int nx = mouseX / lato;
+            int ny = mouseY / lato;
 
-        boolean[][] allr = logic.getSingleReversi(board, ny, nx, currP);
-        if (allr[ny][nx]) {
-            for (int r = 0; r < allr.length; r++) {
-                println();
-                for (int c = 0; c < allr[r].length; c++) {
-                    print((allr[r][c] ? "T" : "_") + "\t");
-                    if (allr[r][c])
-                        board.setStatus(r, c, currP);
+            print(nx + "." + ny + " ");
+            flush();
+
+            boolean[][] allr = logic.getSingleReversi(board, ny, nx, node.me.getUuid());
+            if (allr[ny][nx]) {
+                for (int r = 0; r < allr.length; r++) {
+                    println();
+                    for (int c = 0; c < allr[r].length; c++) {
+                        print((allr[r][c] ? "T" : "_") + "\t");
+                        if (allr[r][c])
+                            board.setStatus(r, c, node.me.getUuid());
+                    }
                 }
-            }
-            println();
-            currP = (currP + 1) % pls.size();
-            println("Reversi! Giocatore: " + currP);
-        } else if (logic.canColonize(board, ny, nx, currP)) {
-            board.setStatus(ny, nx, currP);
-            currP = (currP + 1) % pls.size();
-            println("Colonize! Giocatore: " + currP);
-        } //else println("Mossa non consentita");
+                println();
+                currP = (currP + 1) % pls.size();
+                println("Reversi! Giocatore: " + currP);
+            } else if (logic.canColonize(board, ny, nx, node.me.getUuid())) {
+                board.setStatus(ny, nx, node.me.getUuid());
+                currP = (currP + 1) % pls.size();
+                println("Colonize! Giocatore: " + currP);
+            } //else println("Mossa non consentita");
 
-        winner = logic.getWinner(board);
+            winner = logic.getWinner(board);
+
+        }
     }
 
     static Node node;
