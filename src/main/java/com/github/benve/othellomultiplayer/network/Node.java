@@ -126,8 +126,14 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         if (msg.uuid != this.me.getUuid()) {
             try {
 
-                if (msg.content instanceof Board) {
+                if (msg.content instanceof Board) {//StartGame
                     this.b = (Board) msg.content;
+                } else if (msg.content instanceof int[]) {//mangio pedina
+                    int[] m = (int[]) msg.content;
+                    b.setStatus(m[0], m[1], m[2]);
+                } if (msg.content instanceof Integer) {//mangio pedina
+                    int m = (Integer) msg.content;
+                    b.currP = m;
                 }
 
                 getNext().broadcast(msg);
@@ -194,12 +200,36 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
      * Se il nodo è il primo della lista crea la board
      * e la passa agli altri
      */
-    public void startGame() throws NotBoundException {
+    public void startGame() {
         b = new Board();
         b.initRandomBoard(allPlayer);
         Message msg = new Message(me.getUuid());
         msg.content = b;
-        startBroadcast(msg);
+        try {
+            startBroadcast(msg);
+        } catch (NotBoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public void sendMove(int r, int c, int uuid) {
+        Message msg = new Message(me.getUuid());
+        msg.content = new int[] {r, c, uuid};
+        try {
+            startBroadcast(msg);
+        } catch (NotBoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public void sendToken(Integer currP) {
+        Message msg = new Message(me.getUuid());
+        msg.content = currP;
+        try {
+            startBroadcast(msg);
+        } catch (NotBoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /*

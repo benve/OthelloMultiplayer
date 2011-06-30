@@ -14,7 +14,7 @@ public class Board implements Serializable {
     /**
      * Giocatore corrente
      */
-    public int currP;
+    public int currP = 0;
 
     //Solo per test
     protected void setBoard(int [][] b) {
