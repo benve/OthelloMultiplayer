@@ -2,9 +2,9 @@ package com.github.benve.othellomultiplayer.gui;
 
 import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
+import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
 import com.github.benve.othellomultiplayer.network.Node;
-import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -37,7 +37,7 @@ public class Gui extends PApplet {
 
     public void setup() {
         //Grandezza finestra
-        size(450+cornice*2, 450+cornice*2);
+        size(350+cornice*2, 350+cornice*2);
         frameRate(10);
         background(100);
 
@@ -47,7 +47,6 @@ public class Gui extends PApplet {
         textFont(myFont, 32);
 
         ellipseMode(CORNER);
-
     }
 
     public void draw() {
@@ -57,10 +56,15 @@ public class Gui extends PApplet {
         stroke(255);
 
         if (winner > -1) {
-            fill(color(pls.get(winner).c));
+            fill(color(pls.getByUUID(winner).c));
             text("The Winner is \n"+winner+" !!", height/2, width/2);
 
         } else if (board != null) {
+
+            if (board.currP >= pls.size()) {//currP è troppo grande per crash dell'ultimo nodo di pls
+                board.currP = board.currP % pls.size();
+            }
+
 
             boolean[][] reversi = null;
             boolean[][] colonize = null;
@@ -107,13 +111,22 @@ public class Gui extends PApplet {
                             }
                         }
                     } else {//Cassella con una pedina
-                        fill(color(pls.getByUUID(board.getStatus(j, i)).c));
+                        Player owner = pls.getByUUID(board.getStatus(j, i));
+                        String text = "";
+                        if(owner == null) {
+                            fill(200);
+                            text = "X";//non stampa il teschietto: provare a cambiare il font
+                        } else {
+                            fill(color(owner.c));
+                            text = ""+board.currP;
+                        }
+
                         noStroke();
                         ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
 
                         //label player
                         fill(0);
-                        text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                        text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
                     }
                 }
             }
@@ -146,10 +159,12 @@ public class Gui extends PApplet {
                         println("Ciao "+board.currP+"  UUID:"+pls.get(board.currP).getUuid()+"  ME:"+node.me.getUuid());
                         break;
                     case 'a':
-                        board.setStatus(mouseY / lato, mouseX / lato, board.currP);
+                        board.setStatus(mouseY / lato, mouseX / lato, node.me.getUuid());
+                        node.sendMove(mouseY / lato, mouseX / lato, node.me.getUuid());
                         break;
                     case 'd':
                         board.setStatus(mouseY / lato, mouseX / lato, -1);
+                        node.sendMove(mouseY / lato, mouseX / lato, -1);
                         break;
                 }
             }

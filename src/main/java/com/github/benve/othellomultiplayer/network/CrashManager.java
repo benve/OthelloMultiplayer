@@ -77,6 +77,8 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         } catch (RemoteException e) {
             this.stopTimerContreller();
 
+
+
             int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 
             allPlayer.removeElementByPosition(delIndex);
