@@ -21,6 +21,11 @@
             <version>1.2.1</version>
         </dependency>
         <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>controlP5</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
@@ -52,6 +57,22 @@
                             <artifactId>processing-core</artifactId>
                             <version>1.2.1</version>
                             <file>${basedir}/lib/core.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hack-processing-gui</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.processing</groupId>
+                            <artifactId>controlP5</artifactId>
+                            <version>0.5.4</version>
+                            <file>${basedir}/lib/controlP5.jar</file>
                             <repositoryLayout>default</repositoryLayout>
                             <packaging>jar</packaging>
                             <generatePom>true</generatePom>

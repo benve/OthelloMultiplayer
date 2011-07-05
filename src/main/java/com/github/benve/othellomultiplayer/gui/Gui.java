@@ -6,8 +6,11 @@ import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
 import com.github.benve.othellomultiplayer.network.Node;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
 import processing.core.PApplet;
 import processing.core.PFont;
+
 
 public class Gui extends PApplet {
 
@@ -16,6 +19,8 @@ public class Gui extends PApplet {
         //return color(random(0, 255), random(0, 255), random(0, 255));
         return color(color[0], color[1], color[2]);
     }
+
+    ControlP5 controlP5;
 
     final BoardLogic logic = BoardLogic.getInstance();
 
@@ -47,6 +52,15 @@ public class Gui extends PApplet {
         textFont(myFont, 32);
 
         ellipseMode(CORNER);
+
+        controlP5 = new ControlP5(this);
+        controlP5 = new ControlP5(this);
+        controlP5.addTextfield("Il tuo nome",100,100,100,30);
+
+    }
+
+    void controlEvent(ControlEvent event) {
+        println(event.controller().stringValue());
     }
 
     public void draw() {
@@ -57,7 +71,7 @@ public class Gui extends PApplet {
 
         if (winner > -1) {
             fill(color(pls.getByUUID(winner).c));
-            text("The Winner is \n"+winner+" !!", height/2, width/2);
+            text("The Winner is \n"+winner+" !!", height/2, width/4);
 
         } else if (board != null) {
 
@@ -129,6 +143,14 @@ public class Gui extends PApplet {
                         text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
                     }
                 }
+            }
+            if (reversi == null && colonize == null) {
+                board.currP = (board.currP + 1) % pls.size();
+                println("Non ho mosse possibili, next Giocatore: " + board.currP);
+                node.sendToken(board.currP);
+                //TODO:Se non ci sono mosse possibili forse qualcuno ha vinto :(
+                //if (winner == -1)
+                //    winner = logic.getWinner(board);
             }
         } else {//Iniziallizzazione Board
             if (node != null && node.b != null) {
