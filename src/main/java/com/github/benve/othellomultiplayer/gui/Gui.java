@@ -4,12 +4,17 @@ import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
 import com.github.benve.othellomultiplayer.network.Node;
-import com.github.benve.othellomultiplayer.utils.NetUtils;
-import controlP5.ControlEvent;
-import controlP5.ControlP5;
+import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 
 public class Gui extends PApplet {
@@ -29,7 +34,7 @@ public class Gui extends PApplet {
     //Lato in pixel della casella
     int lato;
 
-    int nplayers;
+    int players = 3;
 
     //Vincitore, -1 se ancora non impostato
     int winner = -1;
@@ -54,18 +59,12 @@ public class Gui extends PApplet {
         ellipseMode(CORNER);
 
         controlP5 = new ControlP5(this);
-        controlP5 = new ControlP5(this);
-        controlP5.addTextfield("Il tuo nome",100,100,100,30);
-
-    }
-
-    void controlEvent(ControlEvent event) {
-        println(event.controller().stringValue());
+        createMessageBox();
     }
 
     public void draw() {
 
-        background(0);
+        background(100);
 
         stroke(255);
 
@@ -156,14 +155,13 @@ public class Gui extends PApplet {
             if (node != null && node.b != null) {
                 board = node.b;
                 pls = node.allPlayer;
-                nplayers = pls.size();
                 bSize = board.side;
                 lato = height / bSize;
             }
         }
     }
 
-    public void keyPressed() {
+    /*public void keyPressed() {
         if (key == CODED) {
             println(keyCode);
         } else {
@@ -191,11 +189,11 @@ public class Gui extends PApplet {
                 }
             }
         }
-    }
+    }*/
 
     public void mouseClicked() {
 
-        if (pls.get(board.currP).getUuid() == node.me.getUuid()) {
+        if (node != null && node.b != null && (pls.get(board.currP).getUuid() == node.me.getUuid())) {
 
             int nx = mouseX / lato;
             int ny = mouseY / lato;
@@ -233,60 +231,197 @@ public class Gui extends PApplet {
         }
     }
 
+    int messageBoxResult = -1;
+    ControlGroup messageBox;
+    String messageBoxString = "";
+
+    void createMessageBox() {
+        // create a group to store the messageBox elements
+        messageBox = controlP5.addGroup("messageBox", width / 2 - 150, 100, 300);
+        messageBox.setBackgroundHeight(200);
+        messageBox.setBackgroundColor(color(0, 100));
+        messageBox.hideBar();
+
+        // add a TextLabel to the messageBox.
+        Textlabel l = controlP5.addTextlabel("messageBoxLabel", "Parametri di gioco:", 20, 20);
+        l.moveTo(messageBox);
+
+        // add a textfield-controller with named-id inputbox
+        // this controller will be linked to function inputbox() below.
+        Textfield name = controlP5.addTextfield("name", 20, 40, 260, 20);
+        //name.captionLabel().setVisible(false);
+        name.moveTo(messageBox);
+        name.setColorForeground(color(20));
+        name.setColorBackground(color(20));
+        name.setColorActive(color(100));
+
+        RadioButton radio = controlP5.addRadioButton("radioButton",20,90);
+        radio.moveTo(messageBox);
+        radio.setColorForeground(color(120));
+        radio.setColorActive(color(255));
+        radio.setColorLabel(color(255));
+        radio.setItemsPerRow(2);
+        radio.setSpacingColumn(70);
+        radio.setNoneSelectedAllowed(false);
+
+        Toggle t1 = radio.addItem("new_game",1);
+        t1.setState(true);
+        t1.captionLabel().setColorBackground(color(80));
+        t1.captionLabel().style().movePadding(2,0,-1,2);
+        t1.captionLabel().style().moveMargin(-2,0,0,-3);
+        t1.captionLabel().style().backgroundWidth = 46;
+
+        Toggle t2 = radio.addItem("join_game",0);
+        t2.captionLabel().setColorBackground(color(80));
+        t2.captionLabel().style().movePadding(2,0,-1,2);
+        t2.captionLabel().style().moveMargin(-2,0,0,-3);
+        t2.captionLabel().style().backgroundWidth = 46;
+
+        Textfield port = controlP5.addTextfield("port", 20, 120, 260, 20);
+        port.moveTo(messageBox);
+        port.setColorForeground(color(20));
+        port.setColorBackground(color(20));
+        port.setColorActive(color(100));
+        port.hide();
+
+        Slider pslider = controlP5.addSlider("players", 2, 8, 3, 20, 120, 260, 20);
+        pslider.captionLabel().setVisible(false);
+        pslider.moveTo(messageBox);
+        pslider.setNumberOfTickMarks(7);
+        pslider.setSliderMode(Slider.FLEXIBLE);
+        //pslider.hide();
+
+        // add the OK button to the messageBox.
+        // the name of the button corresponds to function buttonOK
+        // below and will be triggered when pressing the button.
+        controlP5.Button b1 = controlP5.addButton("buttonOK", 0, 65, 200, 80, 24);
+        b1.moveTo(messageBox);
+        b1.setColorBackground(color(40));
+        b1.setColorActive(color(20));
+        // by default setValue would trigger function buttonOK,
+        // therefore we disable the broadcasting before setting
+        // the value and enable broadcasting again afterwards.
+        // same applies to the cancel button below.
+        b1.setBroadcast(false);
+        b1.setValue(1);
+        b1.setBroadcast(true);
+        b1.setCaptionLabel("OK");
+        // centering of a label needs to be done manually
+        // with marginTop and marginLeft
+        //b1.captionLabel().style().marginTop = -2;
+        //b1.captionLabel().style().marginLeft = 26;
+
+        // add the Cancel button to the messageBox.
+        // the name of the button corresponds to function buttonCancel
+        // below and will be triggered when pressing the button.
+        controlP5.Button b2 = controlP5.addButton("buttonCancel", 0, 155, 200, 80, 24);
+        b2.moveTo(messageBox);
+        b2.setBroadcast(false);
+        b2.setValue(0);
+        b2.setBroadcast(true);
+        b2.setCaptionLabel("Cancel");
+        b2.setColorBackground(color(40));
+        b2.setColorActive(color(20));
+        //b2.captionLabel().toUpperCase(false);
+        // centering of a label needs to be done manually
+        // with marginTop and marginLeft
+        //b2.captionLabel().style().marginTop = -2;
+        //b2.captionLabel().style().marginLeft = 16;
+    }
+
+    public void controlEvent(ControlEvent theEvent) {
+        if(
+                controlP5.controller("players") != null &&
+                controlP5.controller("port") != null &&
+                theEvent.isGroup() &&
+                theEvent.group().name().equals("radioButton")
+
+                ) {
+            if (theEvent.group().value() == 0) {
+                controlP5.controller("players").hide();
+                controlP5.controller("port").show();
+            } else {
+                controlP5.controller("players").show();
+                controlP5.controller("port").hide();
+            }
+        }
+
+    }
+
+    // function buttonOK will be triggered when pressing
+// the OK button of the messageBox.
+    void buttonOK(int theValue) {
+        println("a button event from button OK.");
+        messageBoxString = ((Textfield) controlP5.controller("inputbox")).getText();
+        messageBoxResult = theValue;
+
+         try {
+        if (((Toggle)controlP5.controller("new_game")).getState()) {//Server registrazione
+
+                node = new Node(1234, players);
+
+                node.initializeNode(true);
+
+                node.registerToGame(true, 0);
+
+
+
+        } else {
+            int p = Integer.parseInt(((Textfield)controlP5.controller("port")).getText());
+            node = new Node(p);
+
+            node.initializeNode(false);
+
+            node.registerToGame(false, 1234);
+
+        }
+
+         } catch (RemoteException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (AlreadyBoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (UnknownHostException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (SocketException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (MaxPlayerException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (NotBoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+        messageBox.hide();
+
+            if (node.allPlayer.getPosition(node.me) == 0) {
+                    node.startGame();
+                    //node.actionToken(node.me.getUuid());
+            }
+
+    }
+
+
+    // function buttonCancel will be triggered when pressing
+// the Cancel button of the messageBox.
+    void buttonCancel(int theValue) {
+        println("a button event from button Cancel.");
+        messageBoxResult = theValue;
+        messageBox.hide();
+    }
+
+    // inputbox is called whenever RETURN has been pressed
+// in textfield-controller inputbox
+    void name(String theString) {
+        println("got something from the inputbox : " + theString);
+        messageBoxString = theString;
+        //messageBox.hide();
+    }
+
     static Node node;
 
 
     static public void main(String args[]) {
 
-        try {
-
-            boolean isServer = false;
-            BoardLogic bl1 = BoardLogic.getInstance();
-            Board b1;
-            int port;
-
-            NetUtils n = NetUtils.getInstance();
-
-            //n.getPublicIP().toString());
-            if (args.length >= 3) {
-                port = Integer.parseInt(args[0]);
-
-                System.out.println(port + "\t" + n.getHostAddress());
-
-                node = new Node(port, Integer.parseInt(args[1]));
-                if (Integer.parseInt(args[2]) == 1) {
-                    isServer = true;
-                }
-
-                node.initializeNode(isServer);
-
-                System.out.println(node.me.getPort() + "\t" + node.me.getUuid() + "|" + node.me.getPort());
-
-                if (isServer) {
-                    node.registerToGame(isServer, 0);
-                } else {
-                    node.registerToGame(isServer, 1234);
-                }
-
-                PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
-
-
-                if (node.allPlayer.getPosition(node.me) == 0) {
-                    node.startGame();
-                    //node.actionToken(node.me.getUuid());
-                }
-
-
-            } else {
-                System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
-                        "con 1 viene istanziato il registro dei giocatori");
-
-            }
-
-        } catch (Throwable e) {
-            //Exception Funnel
-            e.printStackTrace();
-        }
+        PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
 
     }
 }

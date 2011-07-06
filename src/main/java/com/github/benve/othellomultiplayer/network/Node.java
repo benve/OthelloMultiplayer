@@ -35,7 +35,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
-        maxplayer = 3;
         allPlayer = PlayerList.getInstance();
     }
 
@@ -48,7 +47,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         System.out.println("porta:"+freeport);
 
         me = new Player(Name,freeport);
-        maxplayer = 4;
         allPlayer = PlayerList.getInstance();
     }
 
@@ -114,6 +112,8 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         } catch (CantAddPlayerException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
+        maxplayer = this.allPlayer.size();
 
         cm = new CrashManager(this.me);
         cm.initializeCrashManager();
