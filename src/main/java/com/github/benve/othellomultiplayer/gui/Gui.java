@@ -10,6 +10,7 @@ import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
@@ -43,18 +44,26 @@ public class Gui extends PApplet {
     Board board = null;
 
     //Cornice intorno al campo di gioco
-    int cornice = 10;
+    int state = 40;
+
+    int H = 400;
+
+    String msg = "";
+
+    PFont bigFont, smallFont;
 
     public void setup() {
         //Grandezza finestra
-        size(350+cornice*2, 350+cornice*2);
+        size(H, H+state);
         frameRate(10);
         background(100);
 
         smooth();
 
-        PFont myFont = loadFont("Ziggurat-HTF-Black-32.vlw");
-        textFont(myFont, 32);
+        bigFont = loadFont("Ziggurat-HTF-Black-32.vlw");
+        textFont(bigFont, 32);
+
+        smallFont = createFont("Times", 20, true);
 
         ellipseMode(CORNER);
 
@@ -64,13 +73,13 @@ public class Gui extends PApplet {
 
     public void draw() {
 
-        background(100);
+        background(0);
 
         stroke(255);
 
         if (winner > -1) {
             fill(color(pls.getByUUID(winner).c));
-            text("The Winner is \n"+winner+" !!", height/2, width/4);
+            text("The Winner is \n"+winner+" !!", H/2, width/4);
 
         } else if (board != null) {
 
@@ -91,15 +100,16 @@ public class Gui extends PApplet {
             }
 
             //Disegno righe
-            for (int y = 0; y < bSize; y++) {
+            for (int y = 0; y <= bSize; y++) {
                 line(0, y * lato, width, y * lato);
             }
             //Disegno colonne
             for (int x = 0; x < bSize; x++) {
-                line(x * lato, 0, x * lato, height);
+                line(x * lato, 0, x * lato, H);
             }
 
             //Disegno pedine
+            textFont(bigFont);
             for (int i = 0; i < bSize; i++) {
                 for (int j = 0; j < bSize; j++) {
                     //println("Casella "+i+" "+j);
@@ -151,49 +161,24 @@ public class Gui extends PApplet {
                 //if (winner == -1)
                 //    winner = logic.getWinner(board);
             }
+
+            msg =  "Turno del Giocatore: " + board.currP;
         } else {//Iniziallizzazione Board
             if (node != null && node.b != null) {
                 board = node.b;
                 pls = node.allPlayer;
                 bSize = board.side;
-                lato = height / bSize;
+                lato = H / bSize;
             }
         }
+        fill(255);
+        textFont(smallFont);
+        text(msg, 10, H+20);
     }
 
-    /*public void keyPressed() {
-        if (key == CODED) {
-            println(keyCode);
-        } else {
-            int intk = -1;
-            try {
-                intk = Integer.parseInt(key + "");
-
-                println("Cambio Giocatore: " + intk);
-                board.currP = intk % nplayers;
-            } catch (NumberFormatException e) {
-            }
-            if (intk == -1) {
-                switch (key) {
-                    case 'p':
-                        println("Ciao "+board.currP+"  UUID:"+pls.get(board.currP).getUuid()+"  ME:"+node.me.getUuid());
-                        break;
-                    case 'a':
-                        board.setStatus(mouseY / lato, mouseX / lato, node.me.getUuid());
-                        node.sendMove(mouseY / lato, mouseX / lato, node.me.getUuid());
-                        break;
-                    case 'd':
-                        board.setStatus(mouseY / lato, mouseX / lato, -1);
-                        node.sendMove(mouseY / lato, mouseX / lato, -1);
-                        break;
-                }
-            }
-        }
-    }*/
-
     public void mouseClicked() {
-
-        if (node != null && node.b != null && (pls.get(board.currP).getUuid() == node.me.getUuid())) {
+        //node è sicuramente valorizzato se lo è pls
+        if (pls != null && (pls.get(board.currP).getUuid() == node.me.getUuid())) {
 
             int nx = mouseX / lato;
             int ny = mouseY / lato;
@@ -215,14 +200,12 @@ public class Gui extends PApplet {
                 }
                 println();
                 board.currP = (board.currP + 1) % pls.size();
-                println("Reversi! Giocatore: " + board.currP);
                 node.sendToken(board.currP);
 
             } else if (logic.canColonize(board, ny, nx, node.me.getUuid())) {
                 board.setStatus(ny, nx, node.me.getUuid());
                 node.sendMove(ny,nx,node.me.getUuid());
                 board.currP = (board.currP + 1) % pls.size();
-                println("Colonize! Giocatore: " + board.currP);
                 node.sendToken(board.currP);
             } //else println("Mossa non consentita");
 
@@ -236,20 +219,23 @@ public class Gui extends PApplet {
     String messageBoxString = "";
 
     void createMessageBox() {
+
         // create a group to store the messageBox elements
         messageBox = controlP5.addGroup("messageBox", width / 2 - 150, 100, 300);
-        messageBox.setBackgroundHeight(200);
-        messageBox.setBackgroundColor(color(0, 100));
+        messageBox.setBackgroundHeight(220);
+        messageBox.setBackgroundColor(color(255, 100));
         messageBox.hideBar();
 
         // add a TextLabel to the messageBox.
-        Textlabel l = controlP5.addTextlabel("messageBoxLabel", "Parametri di gioco:", 20, 20);
+        Textlabel l = controlP5.addTextlabel("messageBoxLabel", "Game:", 20, 20);
         l.moveTo(messageBox);
 
         // add a textfield-controller with named-id inputbox
         // this controller will be linked to function inputbox() below.
         Textfield name = controlP5.addTextfield("name", 20, 40, 260, 20);
-        //name.captionLabel().setVisible(false);
+        name.captionLabel().setVisible(false);
+        name.captionLabel().set("your name");
+        //name.setText("Player");
         name.moveTo(messageBox);
         name.setColorForeground(color(20));
         name.setColorBackground(color(20));
@@ -266,19 +252,22 @@ public class Gui extends PApplet {
 
         Toggle t1 = radio.addItem("new_game",1);
         t1.setState(true);
+        t1.captionLabel().set("new game");
         t1.captionLabel().setColorBackground(color(80));
         t1.captionLabel().style().movePadding(2,0,-1,2);
         t1.captionLabel().style().moveMargin(-2,0,0,-3);
         t1.captionLabel().style().backgroundWidth = 46;
 
         Toggle t2 = radio.addItem("join_game",0);
+        t2.captionLabel().set("join game");
         t2.captionLabel().setColorBackground(color(80));
         t2.captionLabel().style().movePadding(2,0,-1,2);
         t2.captionLabel().style().moveMargin(-2,0,0,-3);
         t2.captionLabel().style().backgroundWidth = 46;
 
-        Textfield port = controlP5.addTextfield("port", 20, 120, 260, 20);
+        Textfield port = controlP5.addTextfield("registration_service", 20, 120, 260, 20);
         port.moveTo(messageBox);
+        port.captionLabel().set("address of registration service");
         port.setColorForeground(color(20));
         port.setColorBackground(color(20));
         port.setColorActive(color(100));
@@ -294,7 +283,7 @@ public class Gui extends PApplet {
         // add the OK button to the messageBox.
         // the name of the button corresponds to function buttonOK
         // below and will be triggered when pressing the button.
-        controlP5.Button b1 = controlP5.addButton("buttonOK", 0, 65, 200, 80, 24);
+        controlP5.Button b1 = controlP5.addButton("buttonOK", 0, 65, 170, 80, 24);
         b1.moveTo(messageBox);
         b1.setColorBackground(color(40));
         b1.setColorActive(color(20));
@@ -314,7 +303,7 @@ public class Gui extends PApplet {
         // add the Cancel button to the messageBox.
         // the name of the button corresponds to function buttonCancel
         // below and will be triggered when pressing the button.
-        controlP5.Button b2 = controlP5.addButton("buttonCancel", 0, 155, 200, 80, 24);
+        controlP5.Button b2 = controlP5.addButton("buttonCancel", 0, 155, 170, 80, 24);
         b2.moveTo(messageBox);
         b2.setBroadcast(false);
         b2.setValue(0);
@@ -332,17 +321,17 @@ public class Gui extends PApplet {
     public void controlEvent(ControlEvent theEvent) {
         if(
                 controlP5.controller("players") != null &&
-                controlP5.controller("port") != null &&
+                controlP5.controller("registration_service") != null &&
                 theEvent.isGroup() &&
                 theEvent.group().name().equals("radioButton")
 
                 ) {
             if (theEvent.group().value() == 0) {
                 controlP5.controller("players").hide();
-                controlP5.controller("port").show();
+                controlP5.controller("registration_service").show();
             } else {
                 controlP5.controller("players").show();
-                controlP5.controller("port").hide();
+                controlP5.controller("registration_service").hide();
             }
         }
 
@@ -350,52 +339,51 @@ public class Gui extends PApplet {
 
     // function buttonOK will be triggered when pressing
 // the OK button of the messageBox.
-    void buttonOK(int theValue) {
+    void buttonOK(int theValue) throws IOException {
         println("a button event from button OK.");
-        messageBoxString = ((Textfield) controlP5.controller("inputbox")).getText();
+        messageBoxString = ((Textfield) controlP5.controller("name")).getText();
         messageBoxResult = theValue;
 
-         try {
-        if (((Toggle)controlP5.controller("new_game")).getState()) {//Server registrazione
+        try {
+            if (((Toggle)controlP5.controller("new_game")).getState()) {//Server registrazione
 
-                node = new Node(1234, players);
+                node = new Node(messageBoxString, 1234, players);
 
                 node.initializeNode(true);
 
                 node.registerToGame(true, 0);
 
+            } else {
+                int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
+                node = new Node(messageBoxString);
 
+                node.initializeNode(false);
 
-        } else {
-            int p = Integer.parseInt(((Textfield)controlP5.controller("port")).getText());
-            node = new Node(p);
+                node.registerToGame(false, p);
 
-            node.initializeNode(false);
-
-            node.registerToGame(false, 1234);
-
-        }
-
-         } catch (RemoteException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (AlreadyBoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (UnknownHostException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (SocketException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (MaxPlayerException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (NotBoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+
+
+        } catch (RemoteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (AlreadyBoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (UnknownHostException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SocketException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (MaxPlayerException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (NotBoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         messageBox.hide();
 
-            if (node.allPlayer.getPosition(node.me) == 0) {
-                    node.startGame();
-                    //node.actionToken(node.me.getUuid());
-            }
+        if (node.allPlayer.getPosition(node.me) == 0) {
+            node.startGame();
+            //node.actionToken(node.me.getUuid());
+        }
 
     }
 
@@ -418,10 +406,7 @@ public class Gui extends PApplet {
 
     static Node node;
 
-
     static public void main(String args[]) {
-
         PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
-
     }
 }

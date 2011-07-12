@@ -38,7 +38,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         allPlayer = PlayerList.getInstance();
     }
 
-    public Node(String Name) throws IOException {
+    public Node(String name) throws IOException {
         super();
         ServerSocket ss = new ServerSocket(0);
         int freeport = ss.getLocalPort();
@@ -46,7 +46,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         System.out.println("porta:"+freeport);
 
-        me = new Player(Name,freeport);
+        me = new Player(name,freeport);
         allPlayer = PlayerList.getInstance();
     }
 
@@ -57,9 +57,9 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         allPlayer = PlayerList.getInstance();
     }
 
-    public Node(String Name, int port, int n_player) throws IOException {
+    public Node(String name, int port, int n_player) throws IOException {
         super();
-        me = new Player(Name, port);
+        me = new Player(name, port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
     }

@@ -60,7 +60,7 @@ public class Player implements Serializable{
         this.name = name;
         this.port = port;
         this.ipAddress = NetUtils.getInstance().getHostAddress();
-        this.uuid = UUID.randomUUID().hashCode();
+        this.uuid = Math.abs(UUID.randomUUID().hashCode());
     }
 
 

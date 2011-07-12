@@ -1,7 +1,5 @@
 package com.github.benve.othellomultiplayer.game;
 
-import org.omg.stub.java.rmi._Remote_Stub;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -396,7 +394,7 @@ public class BoardLogic {
     /**
      * Ritorna il giocatore che ha più pedine
      * @param b
-     * @return
+     * @return il giocatore che vince o -1 se non è finito il gioco
      */
     public int getWinner(Board b) {
         HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
@@ -420,6 +418,13 @@ public class BoardLogic {
                 max = en.getValue();
                 winner = en.getKey();
             }
+
+        }
+
+        int nw = 0;//numero di vincitori, se > 1 patta
+        for ( Integer val : count.values()) {
+            if (val >= max) nw++;
+            if (nw >= 2) return -2;
         }
 
         return winner;
