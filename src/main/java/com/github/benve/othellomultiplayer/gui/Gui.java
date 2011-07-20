@@ -20,20 +20,23 @@ import java.rmi.RemoteException;
 
 public class Gui extends PApplet {
 
-    //color(random(0, 255), random(0, 255), random(0, 255));
-    public int color(float[] color) {
-        //return color(random(0, 255), random(0, 255), random(0, 255));
-        return color(color[0], color[1], color[2]);
-    }
+    int[] colors = new int[]{
+            0xff722640,
+            0xffE46501,
+            0xff40337F,
+            0xffE434FE,
+            0xffF1A6BF,
+            0xff0E5940,
+            0xff1BCB01,
+            0xffBFCC80,
+            0xff1B9AFE,
+            0xff8DD9BF,
+            0xffBFB3FF
+    };
 
     ControlP5 controlP5;
 
     final BoardLogic logic = BoardLogic.getInstance();
-
-    //lato in caselle della scacchiera
-    int bSize;
-    //Lato in pixel della casella
-    int lato;
 
     int players = 3;
 
@@ -48,7 +51,13 @@ public class Gui extends PApplet {
 
     int H = 400;
 
-    String msg = "";
+     //lato in caselle della scacchiera
+    int bSize = 10;
+    //Lato in pixel della casella
+    int lato = H / bSize;
+
+    //Messaggio log in Gui
+    String msg = "messaggio di log";
 
     PFont bigFont, smallFont;
 
@@ -68,6 +77,8 @@ public class Gui extends PApplet {
         ellipseMode(CORNER);
 
         controlP5 = new ControlP5(this);
+        controlP5.disableShortcuts();
+        controlP5.setAutoDraw(true);
         createMessageBox();
     }
 
@@ -76,10 +87,12 @@ public class Gui extends PApplet {
         background(0);
         strokeWeight(3);
         stroke(200);
+        fill(200);
 
         //Disegno righe
         for (int y = 0; y <= bSize; y++) {
             line(0, y * lato, width, y * lato);
+
         }
         //Disegno colonne
         for (int x = 0; x < bSize; x++) {
@@ -87,7 +100,7 @@ public class Gui extends PApplet {
         }
 
         if (winner > -1) {
-            fill(color(pls.getByUUID(winner).c));
+            fill(colors[pls.getByUUID(winner).c]);
             text("The Winner is \n"+winner+" !!", H/2, width/4);
 
         } else if (board != null) {
@@ -115,18 +128,18 @@ public class Gui extends PApplet {
                     if (board.getStatus(j, i) == -1) {
                         if (player.getUuid() == node.me.getUuid()) {
                             if (reversi != null && reversi[j][i]) {//Mossa possibile
-                                stroke(color(player.c));
+                                stroke(colors[player.c]);
                                 noFill();
                                 ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
                                 //Label
-                                fill(color(player.c));
+                                fill(colors[player.c]);
                                 text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
                             } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
-                                stroke(color(player.c));
+                                stroke(colors[player.c]);
                                 noFill();
                                 rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
                                 //Label
-                                fill(color(player.c));
+                                fill(colors[player.c]);
                                 text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
                             }
                         }
@@ -137,7 +150,7 @@ public class Gui extends PApplet {
                             fill(200);
                             text = "X";//non stampa il teschietto: provare a cambiare il font
                         } else {
-                            fill(color(owner.c));
+                            fill(colors[owner.c]);
                             text = ""+board.currP;
                         }
 
@@ -213,14 +226,13 @@ public class Gui extends PApplet {
 
     int messageBoxResult = -1;
     ControlGroup messageBox;
-    String messageBoxString = "";
 
     void createMessageBox() {
 
         // create a group to store the messageBox elements
         messageBox = controlP5.addGroup("messageBox", width / 2 - 150, 100, 300);
         messageBox.setBackgroundHeight(220);
-        messageBox.setBackgroundColor(color(0, 100));
+        messageBox.setBackgroundColor(color(0, 220));
         messageBox.hideBar();
 
         // add a TextLabel to the messageBox.
@@ -338,20 +350,20 @@ public class Gui extends PApplet {
 // the OK button of the messageBox.
     void buttonOK(int theValue) throws IOException {
         println("a button event from button OK.");
-        messageBoxString = ((Textfield) controlP5.controller("name")).getText();
+        String pname = ((Textfield) controlP5.controller("name")).getText();
         messageBoxResult = theValue;
 
         try {
             if (((Toggle)controlP5.controller("new_game")).getState()) {//Server registrazione
 
-                node = new Node(messageBoxString, 1234, players);
+                node = new Node(pname, 1234, players);
 
                 node.initializeNode(true);
 
                 node.registerToGame(true, 0);
             } else {
                 int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
-                node = new Node(messageBoxString);
+                node = new Node(pname);
 
                 node.initializeNode(false);
 
@@ -395,7 +407,7 @@ public class Gui extends PApplet {
 // in textfield-controller inputbox
     void name(String theString) {
         println("got something from the inputbox : " + theString);
-        messageBoxString = theString;
+        pname = theString;
         //messageBox.hide();
     } */
 
