@@ -24,7 +24,7 @@ public class gMain {
 
 
     public static void main(String[] args) throws IOException, AlreadyBoundException, MaxPlayerException, NotBoundException {
-        Node mySelf;
+        /*Node mySelf;
         boolean isServer = false;
         BoardLogic bl1 = BoardLogic.getInstance();
         Board b1;
@@ -58,8 +58,8 @@ public class gMain {
 
 
             if(mySelf.allPlayer.getPosition(mySelf.me) == 0){
-                mySelf.actionToken(mySelf.me.getUuid());
-            }
+                //mySelf.actionToken(mySelf.me.getUuid());
+            }*/
 
             //PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
 
@@ -85,12 +85,12 @@ public class gMain {
             } */
 
 
-        } else {
+        /*} else {
             System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
                     "con 1 viene istanziato il registro dei giocatori");
 
         }
-
+*/
 
 
 

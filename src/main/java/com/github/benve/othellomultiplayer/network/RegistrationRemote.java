@@ -3,6 +3,8 @@ package com.github.benve.othellomultiplayer.network;
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -17,5 +19,5 @@ import java.util.List;
 public interface RegistrationRemote extends Remote {
     List<Player> register(Player pplay) throws MaxPlayerException, RemoteException, CantAddPlayerException;
 
-    void instaceRegistration() throws RemoteException, AlreadyBoundException;
+    void instaceRegistration() throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException;
 }

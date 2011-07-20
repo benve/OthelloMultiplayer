@@ -38,6 +38,19 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         me = new Player(n_port);
         allPlayer = PlayerList.getInstance();
     }*/
+    public Node(String name) throws IOException {
+        super();
+        ServerSocket ss = new ServerSocket(0);
+        int freeport = ss.getLocalPort();
+        ss.close();
+
+        System.out.println("porta:"+freeport);
+
+        me = new Player(name,freeport);
+
+        allPlayer = PlayerList.getInstance();
+    }
+
 
     public Node(String name, int n_player) throws IOException {
         super();
@@ -73,7 +86,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
      * @throws RemoteException
      * @throws AlreadyBoundException
      */
-    public void initializeNode(boolean server) throws RemoteException, AlreadyBoundException {
+    public void initializeNode(boolean server) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         Registry register;
         register = LocateRegistry.createRegistry(this.me.getPort());
 
@@ -85,7 +98,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
     }
 
-    private void setRegister() throws RemoteException, AlreadyBoundException {
+    private void setRegister() throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         reg1 = new Registration(me.getPort(),this.maxplayer);
         reg1.instaceRegistration();
     }
@@ -100,12 +113,12 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void registerToGame(boolean server,String address) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException {
         String rAddress;
 
-        if(server)
+        /*if(server)
             rAddress = "127.0.0.1";
         else
-            rAddress = address;
+            rAddress = address;*/
 
-        Registry register = LocateRegistry.getRegistry(rAddress,1099);//(regPort);
+        Registry register = LocateRegistry.getRegistry(address,1234);//(regPort);
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 

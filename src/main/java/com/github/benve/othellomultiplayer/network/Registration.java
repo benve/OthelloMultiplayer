@@ -2,8 +2,11 @@ package com.github.benve.othellomultiplayer.network;
 
 import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
+import com.github.benve.othellomultiplayer.utils.NetUtils;
 import sun.rmi.runtime.NewThreadAction;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -76,7 +79,7 @@ public class Registration extends UnicastRemoteObject implements RegistrationRem
         return plist;
     }
 
-    public void instaceRegistration() throws RemoteException, AlreadyBoundException {
+    public void instaceRegistration() throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         Registry registry = LocateRegistry.getRegistry(this.regPort);
         this.registry = registry;
         registry.bind("Reg",this);

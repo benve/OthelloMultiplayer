@@ -6,6 +6,7 @@ import com.github.benve.othellomultiplayer.game.Player;
 import com.github.benve.othellomultiplayer.game.PlayerList;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
 import com.github.benve.othellomultiplayer.network.Node;
+import com.github.benve.othellomultiplayer.utils.NetUtils;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -360,9 +361,10 @@ public class Gui extends PApplet {
 
                 node.initializeNode(true);
 
-                node.registerToGame(true, 0);
+                node.registerToGame(true, NetUtils.getInstance().getHostAddress());//"127.0.0.1");
             } else {
-                int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
+                //int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
+                String p = (((Textfield)controlP5.controller("registration_service")).getText());
                 node = new Node(pname);
 
                 node.initializeNode(false);
