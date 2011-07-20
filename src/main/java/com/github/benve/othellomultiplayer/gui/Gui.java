@@ -39,7 +39,7 @@ public class Gui extends PApplet {
 
     final BoardLogic logic = BoardLogic.getInstance();
 
-    int players = 3;
+    int players = 2;
 
     //Vincitore, -1 se ancora non impostato
     int winner = -1;
@@ -90,101 +90,106 @@ public class Gui extends PApplet {
         stroke(200);
         fill(200);
 
-        //Disegno righe
-        for (int y = 0; y <= bSize; y++) {
-            line(0, y * lato, width, y * lato);
-
-        }
-        //Disegno colonne
-        for (int x = 0; x < bSize; x++) {
-            line(x * lato, 0, x * lato, H);
-        }
 
         if (winner > -1) {
             fill(colors[pls.getByUUID(winner).c]);
-            text("The Winner is \n"+winner+" !!", H/2, width/4);
+            String ws = "The Winner is \n" + pls.getByUUID(winner).getName() + " !!";
+            text(ws, (H - textWidth(ws)) / 2, width / 4);
 
-        } else if (board != null) {
+        } else {
 
-            if (board.currP >= pls.size()) {//currP è troppo grande per crash dell'ultimo nodo di pls
-                board.currP = board.currP % pls.size();
+            //Disegno righe
+            for (int y = 0; y <= bSize; y++) {
+                line(0, y * lato, width, y * lato);
+
+            }
+            //Disegno colonne
+            for (int x = 0; x < bSize; x++) {
+                line(x * lato, 0, x * lato, H);
             }
 
-            boolean[][] reversi = null;
-            boolean[][] colonize = null;
+            if (board != null) {
 
-            Player player = pls.get(board.currP);
+                if (board.currP >= pls.size()) {//currP è troppo grande per crash dell'ultimo nodo di pls
+                    board.currP = board.currP % pls.size();
+                }
 
-            if (logic.hasReversi(board, player.getUuid())) {
-                reversi = logic.getAllReversi(board, player.getUuid());
-            } else if (logic.hasColonize(board, player.getUuid())) {
-                colonize = logic.getAllColonize(board, player.getUuid());
-            }
+                boolean[][] reversi = null;
+                boolean[][] colonize = null;
 
-            //Disegno pedine
-            textFont(bigFont);
-            for (int i = 0; i < bSize; i++) {
-                for (int j = 0; j < bSize; j++) {
-                    //println("Casella "+i+" "+j);
-                    if (board.getStatus(j, i) == -1) {
-                        if (player.getUuid() == node.me.getUuid()) {
-                            if (reversi != null && reversi[j][i]) {//Mossa possibile
-                                stroke(colors[player.c]);
-                                noFill();
-                                ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
-                                //Label
-                                fill(colors[player.c]);
-                                text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
-                            } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
-                                stroke(colors[player.c]);
-                                noFill();
-                                rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
-                                //Label
-                                fill(colors[player.c]);
-                                text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                Player player = pls.get(board.currP);
+
+                if (logic.hasReversi(board, player.getUuid())) {
+                    reversi = logic.getAllReversi(board, player.getUuid());
+                } else if (logic.hasColonize(board, player.getUuid())) {
+                    colonize = logic.getAllColonize(board, player.getUuid());
+                }
+
+                //Disegno pedine
+                textFont(bigFont);
+                for (int i = 0; i < bSize; i++) {
+                    for (int j = 0; j < bSize; j++) {
+                        //println("Casella "+i+" "+j);
+                        if (board.getStatus(j, i) == -1) {
+                            if (player.getUuid() == node.me.getUuid()) {
+                                if (reversi != null && reversi[j][i]) {//Mossa possibile
+                                    stroke(colors[player.c]);
+                                    noFill();
+                                    ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
+                                    //Label
+                                    fill(colors[player.c]);
+                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                                } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
+                                    stroke(colors[player.c]);
+                                    noFill();
+                                    rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
+                                    //Label
+                                    fill(colors[player.c]);
+                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                                }
                             }
-                        }
-                    } else {//Cassella con una pedina
-                        Player owner = pls.getByUUID(board.getStatus(j, i));
-                        String text = "";
-                        if(owner == null) {
-                            fill(200);
-                            text = "X";//non stampa il teschietto: provare a cambiare il font
-                        } else {
-                            fill(colors[owner.c]);
-                            text = ""+board.currP;
-                        }
+                        } else {//Cassella con una pedina
+                            Player owner = pls.getByUUID(board.getStatus(j, i));
+                            String text = "";
+                            if (owner == null) {
+                                fill(200);
+                                text = "X";//non stampa il teschietto: provare a cambiare il font
+                            } else {
+                                fill(colors[owner.c]);
+                                text = "" + board.currP;
+                            }
 
-                        noStroke();
-                        ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
+                            noStroke();
+                            ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
 
-                        //label player
-                        fill(0);
-                        text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                            //label player
+                            fill(0);
+                            text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                        }
                     }
                 }
-            }
-            if (reversi == null && colonize == null) {
-                board.currP = (board.currP + 1) % pls.size();
-                println("Non ho mosse possibili, next Giocatore: " + board.currP);
-                node.sendToken(board.currP);
-                //TODO:Se non ci sono mosse possibili forse qualcuno ha vinto :(
-                //if (winner == -1)
-                //    winner = logic.getWinner(board);
-            }
+                if (reversi == null && colonize == null) {
+                    board.currP = (board.currP + 1) % pls.size();
+                    println("Non ho mosse possibili, next Giocatore: " + board.currP);
+                    node.sendToken(board.currP);
+                    //TODO:Se non ci sono mosse possibili forse qualcuno ha vinto :(
+                    //if (winner == -1)
+                    //    winner = logic.getWinner(board);
+                }
 
-            msg =  "Turno del Giocatore: " + board.currP;
-        } else {//Iniziallizzazione Board
-            if (node != null && node.b != null) {
-                board = node.b;
-                pls = node.allPlayer;
-                bSize = board.side;
-                lato = H / bSize;
+                msg = "Turno del Giocatore: " + player.getName();
+            } else {//Iniziallizzazione Board
+                if (node != null && node.b != null) {
+                    board = node.b;
+                    pls = node.allPlayer;
+                    bSize = board.side;
+                    lato = H / bSize;
+                }
             }
         }
         fill(255);
         textFont(smallFont);
-        text(msg, 10, H+20);
+        text(msg, 10, H + 20);
     }
 
     public void mouseClicked() {
@@ -396,6 +401,27 @@ public class Gui extends PApplet {
 
     }
 
+    public void keyPressed() {
+        if (key == CODED) {
+            println(keyCode);
+        } else {
+                switch (key) {
+                    case 'n':
+                        board.currP = (board.currP + 1) % players;
+                        break;
+                    case 'p':
+                        println("Ciao "+board.currP+"  UUID:"+pls.get(board.currP).getUuid()+"  ME:"+node.me.getUuid());
+                        break;
+                    case 'a':
+                        board.setStatus(mouseY / lato, mouseX / lato, board.currP);
+                        break;
+                    case 'd':
+                        board.setStatus(mouseY / lato, mouseX / lato, -1);
+                        break;
+                }
+        }
+    }
+
 
     // function buttonCancel will be triggered when pressing
 // the Cancel button of the messageBox.
@@ -404,14 +430,6 @@ public class Gui extends PApplet {
         messageBoxResult = theValue;
         messageBox.hide();
     }
-
-    /* inputbox is called whenever RETURN has been pressed
-// in textfield-controller inputbox
-    void name(String theString) {
-        println("got something from the inputbox : " + theString);
-        pname = theString;
-        //messageBox.hide();
-    } */
 
     static Node node;
 
