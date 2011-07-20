@@ -31,14 +31,15 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     private Registration reg1;
     private CrashManager cm;
     public Board b;
+    private String address;
 
-    public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
+    /*public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         allPlayer = PlayerList.getInstance();
-    }
+    }*/
 
-    public Node(String name) throws IOException {
+    public Node(String name, int n_player) throws IOException {
         super();
         ServerSocket ss = new ServerSocket(0);
         int freeport = ss.getLocalPort();
@@ -47,15 +48,16 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         System.out.println("porta:"+freeport);
 
         me = new Player(name,freeport);
+        maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
     }
 
-    public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
+    /*public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
         super();
         me = new Player(n_port);
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
-    }
+    }*/
 
     public Node(String name, int port, int n_player) throws IOException {
         super();
@@ -91,19 +93,19 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     /**
      * Il nodo si registra al gioco
      * @param server se true io ho il Registration altrimenti lo prendo dal nodo remoto
-     * @param rPort porta del registro remoto
      * @throws MaxPlayerException
      * @throws RemoteException
      * @throws NotBoundException
      */
-    public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException {
-        int regPort;
-        if(server)
-            regPort = this.me.getPort();
-        else
-            regPort = rPort;
+    public void registerToGame(boolean server,String address) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException {
+        String rAddress;
 
-        Registry register = LocateRegistry.getRegistry(regPort);
+        if(server)
+            rAddress = "127.0.0.1";
+        else
+            rAddress = address;
+
+        Registry register = LocateRegistry.getRegistry(rAddress,1099);//(regPort);
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
 
@@ -158,7 +160,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         Player nextPlayer = this.allPlayer.getNext(this.me);
         Registry register = null;
 
-        register = LocateRegistry.getRegistry(nextPlayer.getPort());
+        register = LocateRegistry.getRegistry(nextPlayer.getIpAddress(),nextPlayer.getPort());
         NodeRemote rem = (NodeRemote) register.lookup("Node");
 
         return rem;
@@ -176,23 +178,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void receive(Object msg) throws RemoteException {
         int i = 1;
         //System.out.println(msg.toString());
-    }
-
-
-    public void actionToken(int currPlayer) throws NotBoundException {
-        try{
-            if(currPlayer == me.getUuid()){
-                this.startBroadcast(new Message(currPlayer));
-                Thread.sleep(5000);
-                getNext().actionToken(allPlayer.getNext(me).getUuid());
-            }
-        } catch (RemoteException e) {
-                cm.repairAndBroadcastPlayerList();
-                this.actionToken(currPlayer);
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
     }
 
     /**
@@ -231,75 +216,5 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-
-    /*
-    DIRETTIVE DI CRASH RECOVERY
-     */
-    /*
-    public static void resolveCrash(Node currPlayer) throws NotBoundException {
-        int elim = currPlayer.allPlayer.getPosition(currPlayer.allPlayer.getNext(currPlayer.me));
-        currPlayer.allPlayer.remove(elim);
-        currPlayer.startRebuildPlayerList(elim);
-    }
-
-
-    @Override
-    public void RebuildPlayerList(int toDel, int pUUID) throws NotBoundException {
-        if (pUUID != this.me.getUuid()) {
-            allPlayer.remove(toDel);
-            try {
-                getNext().RebuildPlayerList(toDel, pUUID);
-            } catch (RemoteException e) {
-                resolveCrash(this);
-                this.RebuildPlayerList(toDel,pUUID);
-            }
-        }
-    }
-
-    public void startRebuildPlayerList(int toDel) throws NotBoundException {
-        try {
-            this.getNext().RebuildPlayerList(toDel, this.me.getUuid());
-        } catch (RemoteException e) {
-            resolveCrash(this);
-            this.startRebuildPlayerList(toDel);
-        }
-    }
-    */
-
-
 }
 
-
-    /**
-     * Prendo il nodo next e gli chiedo l'ip porta (chiamo replyForIp)
-     * @return
-     * @throws RemoteException
-     * @throws NotBoundException
-     */
-    /*public String askForIp() throws RemoteException, NotBoundException {
-        //Trovo me stesso
-        int position = 0;
-        for(int i=0;i<this.allPlayer.size();i++){
-            if(me.getUuid() == (allPlayer.get(i).getUuid())){
-                System.out.println("Trovato!"+i);
-                position = i;
-                break;
-            }
-        }
-
-        Registry register = LocateRegistry.getRegistry(allPlayer.get((position+1)%maxplayer).getPort());
-
-        NodeRemote rem = (NodeRemote) register.lookup("Node");
-        return rem.replyForIp();
-
-
-    }   */
-
-    /**
-     * Restituisco una Stringa con ip:porta
-     * @return
-     * @throws RemoteException
-     */
-    /*public String replyForIp() throws RemoteException{
-        return (me.getIpAddress()+":"+me.getPort()).toString();//me.getUuid().toString();
-    } *(*/

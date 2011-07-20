@@ -17,13 +17,9 @@ public interface NodeRemote extends Remote {
 
     void initializeNode(boolean server) throws RemoteException, AlreadyBoundException;
 
-    public void registerToGame(boolean server,int rPort) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException;
+    public void registerToGame(boolean server,String address) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException;
 
     public void broadcast(Message msg) throws RemoteException, NotBoundException;
 
-    //public void RebuildPlayerList(int toDel, int pUUID) throws RemoteException, NotBoundException;
-
     public void receive(Object msg) throws RemoteException;
-
-    public void actionToken(int currPlayer) throws NotBoundException, RemoteException;
 }

@@ -102,7 +102,7 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         Player nextPlayer = allPlayer.getNext(me);
         Registry register = null;
 
-        register = LocateRegistry.getRegistry(nextPlayer.getPort());
+        register = LocateRegistry.getRegistry(nextPlayer.getIpAddress(),nextPlayer.getPort());
         CrashManagerRemote rem = (CrashManagerRemote) register.lookup("CrashManager");
 
         return rem;

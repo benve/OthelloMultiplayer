@@ -45,10 +45,10 @@ public class Player implements Serializable{
      * @param port porta su cui sta in ascolto il registro RMI
      * @throws UnknownHostException non è possibile ottenere l'ip corrente
      */
-    public Player(int port) throws UnknownHostException, SocketException {
+    /*public Player(int port) throws UnknownHostException, SocketException {
         this(NetUtils.getInstance().getHostAddress()+":"+port, port);
 
-    }
+    }*/
 
     /**
      * Crea un nuovo giocatore
