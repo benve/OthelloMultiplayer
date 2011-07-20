@@ -74,8 +74,17 @@ public class Gui extends PApplet {
     public void draw() {
 
         background(0);
+        strokeWeight(3);
+        stroke(200);
 
-        stroke(255);
+        //Disegno righe
+        for (int y = 0; y <= bSize; y++) {
+            line(0, y * lato, width, y * lato);
+        }
+        //Disegno colonne
+        for (int x = 0; x < bSize; x++) {
+            line(x * lato, 0, x * lato, H);
+        }
 
         if (winner > -1) {
             fill(color(pls.getByUUID(winner).c));
@@ -86,7 +95,6 @@ public class Gui extends PApplet {
             if (board.currP >= pls.size()) {//currP è troppo grande per crash dell'ultimo nodo di pls
                 board.currP = board.currP % pls.size();
             }
-
 
             boolean[][] reversi = null;
             boolean[][] colonize = null;
@@ -99,15 +107,6 @@ public class Gui extends PApplet {
                 colonize = logic.getAllColonize(board, player.getUuid());
             }
 
-            //Disegno righe
-            for (int y = 0; y <= bSize; y++) {
-                line(0, y * lato, width, y * lato);
-            }
-            //Disegno colonne
-            for (int x = 0; x < bSize; x++) {
-                line(x * lato, 0, x * lato, H);
-            }
-
             //Disegno pedine
             textFont(bigFont);
             for (int i = 0; i < bSize; i++) {
@@ -118,7 +117,6 @@ public class Gui extends PApplet {
                             if (reversi != null && reversi[j][i]) {//Mossa possibile
                                 stroke(color(player.c));
                                 noFill();
-                                strokeWeight(3);
                                 ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
                                 //Label
                                 fill(color(player.c));
@@ -126,7 +124,6 @@ public class Gui extends PApplet {
                             } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
                                 stroke(color(player.c));
                                 noFill();
-                                strokeWeight(3);
                                 rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
                                 //Label
                                 fill(color(player.c));
@@ -223,7 +220,7 @@ public class Gui extends PApplet {
         // create a group to store the messageBox elements
         messageBox = controlP5.addGroup("messageBox", width / 2 - 150, 100, 300);
         messageBox.setBackgroundHeight(220);
-        messageBox.setBackgroundColor(color(255, 100));
+        messageBox.setBackgroundColor(color(0, 100));
         messageBox.hideBar();
 
         // add a TextLabel to the messageBox.
@@ -233,13 +230,14 @@ public class Gui extends PApplet {
         // add a textfield-controller with named-id inputbox
         // this controller will be linked to function inputbox() below.
         Textfield name = controlP5.addTextfield("name", 20, 40, 260, 20);
-        name.captionLabel().setVisible(false);
+        //name.captionLabel().setVisible(false);
         name.captionLabel().set("your name");
         //name.setText("Player");
         name.moveTo(messageBox);
         name.setColorForeground(color(20));
         name.setColorBackground(color(20));
         name.setColorActive(color(100));
+        name.setFocus(true);
 
         RadioButton radio = controlP5.addRadioButton("radioButton",20,90);
         radio.moveTo(messageBox);
@@ -324,7 +322,6 @@ public class Gui extends PApplet {
                 controlP5.controller("registration_service") != null &&
                 theEvent.isGroup() &&
                 theEvent.group().name().equals("radioButton")
-
                 ) {
             if (theEvent.group().value() == 0) {
                 controlP5.controller("players").hide();
@@ -352,7 +349,6 @@ public class Gui extends PApplet {
                 node.initializeNode(true);
 
                 node.registerToGame(true, 0);
-
             } else {
                 int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
                 node = new Node(messageBoxString);
@@ -360,22 +356,21 @@ public class Gui extends PApplet {
                 node.initializeNode(false);
 
                 node.registerToGame(false, p);
-
             }
 
 
         } catch (RemoteException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (AlreadyBoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (UnknownHostException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (SocketException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (MaxPlayerException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (NotBoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         messageBox.hide();
@@ -396,13 +391,13 @@ public class Gui extends PApplet {
         messageBox.hide();
     }
 
-    // inputbox is called whenever RETURN has been pressed
+    /* inputbox is called whenever RETURN has been pressed
 // in textfield-controller inputbox
     void name(String theString) {
         println("got something from the inputbox : " + theString);
         messageBoxString = theString;
         //messageBox.hide();
-    }
+    } */
 
     static Node node;
 
