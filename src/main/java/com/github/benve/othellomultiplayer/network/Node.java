@@ -90,6 +90,8 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         Registry register;
         register = LocateRegistry.createRegistry(this.me.getPort());
 
+        System.setProperty("java.rmi.server.hostname",me.getIpAddress());
+
         this.registry = register;
         this.registry.bind("Node",this);
 
