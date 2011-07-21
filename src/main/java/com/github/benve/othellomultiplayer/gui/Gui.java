@@ -354,7 +354,7 @@ public class Gui extends PApplet {
 
     // function buttonOK will be triggered when pressing
 // the OK button of the messageBox.
-    void buttonOK(int theValue) throws IOException {
+    void buttonOK(int theValue) throws IOException, InterruptedException {
         println("a button event from button OK.");
         String pname = ((Textfield) controlP5.controller("name")).getText();
         messageBoxResult = theValue;
@@ -395,6 +395,7 @@ public class Gui extends PApplet {
         messageBox.hide();
 
         if (node.allPlayer.getPosition(node.me) == 0) {
+            Thread.sleep(2000);
             node.startGame();
             //node.actionToken(node.me.getUuid());
         }
