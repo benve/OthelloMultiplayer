@@ -15,7 +15,7 @@ public class Message implements Serializable {
 
     public Object content;
 
-    Message(int pUUID){
+    public Message(int pUUID){
         uuid = pUUID;
     }
 

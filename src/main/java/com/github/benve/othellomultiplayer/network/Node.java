@@ -22,7 +22,7 @@ import java.rmi.server.UnicastRemoteObject;
  * Time: 10.51
  * To change this template use File | Settings | File Templates.
  */
-public class Node extends UnicastRemoteObject implements NodeRemote {
+public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
 
     public Player me;
     private Registry registry;
@@ -91,12 +91,15 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         register = LocateRegistry.createRegistry(this.me.getPort());
 
         System.setProperty("java.rmi.server.hostname",me.getIpAddress());
+        System.setProperty("java.rmi.disableHttp","true");
 
         this.registry = register;
         this.registry.bind("Node",this);
 
         if(server)
             this.setRegister();
+
+        //Thread.currentThread().setDaemon(true);
 
     }
 
@@ -142,6 +145,9 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
+
+                if (msg.content instanceof String) //Debug
+                    System.out.println(msg.content.toString());
 
                 if (msg.content instanceof Board) {//StartGame
                     this.b = (Board) msg.content;
@@ -230,6 +236,11 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         } catch (NotBoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    @Override
+    public void run() {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
 

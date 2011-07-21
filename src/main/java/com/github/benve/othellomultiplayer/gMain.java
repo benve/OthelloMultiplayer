@@ -4,8 +4,10 @@ import com.github.benve.othellomultiplayer.game.Board;
 import com.github.benve.othellomultiplayer.game.BoardLogic;
 import com.github.benve.othellomultiplayer.gui.Gui;
 import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+import com.github.benve.othellomultiplayer.network.Message;
 import com.github.benve.othellomultiplayer.network.Node;
 import com.github.benve.othellomultiplayer.utils.NetUtils;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -23,94 +25,34 @@ public class gMain {
     public gMain(){}
 
 
-    public static void main(String[] args) throws IOException, AlreadyBoundException, MaxPlayerException, NotBoundException {
-        /*Node mySelf;
+    public static void main(String[] args) throws IOException, AlreadyBoundException, MaxPlayerException, NotBoundException, InterruptedException {
+        Node mySelf;
         boolean isServer = false;
         BoardLogic bl1 = BoardLogic.getInstance();
         Board b1;
         int port;
 
+
+
         NetUtils n = NetUtils.getInstance();
 
         //n.getPublicIP().toString());
-        if(args.length >= 3){
-            port=Integer.parseInt(args[0]);
-
-            System.out.println(port+"\t"+n.getHostAddress());
-
-            mySelf = new Node(port,Integer.parseInt(args[1]));
-            if(Integer.parseInt(args[2]) == 1){
-                isServer = true;
-            }
-
-            mySelf.initializeNode(isServer);
-
-            System.out.println(mySelf.me.getPort()+"\t"+mySelf.me.getUuid()+"|"+mySelf.me.getPort());
-
-            if(isServer) {
-                mySelf.registerToGame(isServer,0);
-            } else {
-                mySelf.registerToGame(isServer,1234);
-            }
-
-            Gui g = new Gui();
-
-
-
-            if(mySelf.allPlayer.getPosition(mySelf.me) == 0){
-                //mySelf.actionToken(mySelf.me.getUuid());
-            }*/
-
-            //PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
-
-
-
-            /*for(int i = 0;i<5;i++){
-                    try {
-                        Thread.sleep(15000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                    mySelf.sendNext(mySelf.me.getUuid());
-            }*/
-
-            /*for(int i=0;i<255; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                System.out.println(mySelf.allPlayer);
-
-            } */
-
-
-        /*} else {
-            System.out.println("Servono 3 parametri: porta numerogiocatori 1\n" +
-                    "con 1 viene istanziato il registro dei giocatori");
-
+        if(args.length == 1){
+            mySelf = new Node("Server",1234,2);
+            mySelf.initializeNode(true);
+            mySelf.registerToGame(true,n.getHostAddress());
+        }else{
+            mySelf = new Node("Client");
+            mySelf.initializeNode(false);
+            mySelf.registerToGame(false,"192.168.1.203");
         }
-*/
 
+        Message msg = new Message(mySelf.me.getUuid());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        for(int i=0;i<25;i++){
+            Thread.sleep(1000);
+            mySelf.startBroadcast(msg);
+        }
 
     }
 }

@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLOutput;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,8 +77,6 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
             getNext().pong();
         } catch (RemoteException e) {
             this.stopTimerContreller();
-
-
 
             int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 

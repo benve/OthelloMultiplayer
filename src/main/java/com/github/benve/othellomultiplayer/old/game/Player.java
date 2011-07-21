@@ -26,20 +26,4 @@ public class Player extends Node implements Serializable {
           return p_name.toString();
       }
 
-
-    static public void main(String args[]) {
-        try {
-            Player luca = new Player("Luca");
-
-            System.out.println(luca.getPort());
-
-            luca.initReg(2);
-            //reg.register(luca);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
 }
