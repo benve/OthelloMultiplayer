@@ -22,7 +22,7 @@ import java.rmi.server.UnicastRemoteObject;
  * Time: 10.51
  * To change this template use File | Settings | File Templates.
  */
-public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
+public class Node extends UnicastRemoteObject implements NodeRemote {
 
     public Player me;
     private Registry registry;
@@ -33,11 +33,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
     public Board b;
     private String address;
 
-    /*public Node(int n_port) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
-        super();
-        me = new Player(n_port);
-        allPlayer = PlayerList.getInstance();
-    }*/
     public Node(String name) throws IOException {
         super();
         ServerSocket ss = new ServerSocket(0);
@@ -64,13 +59,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
         maxplayer = n_player;
         allPlayer = PlayerList.getInstance();
     }
-
-    /*public Node(int n_port, int n_player) throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
-        super();
-        me = new Player(n_port);
-        maxplayer = n_player;
-        allPlayer = PlayerList.getInstance();
-    }*/
 
     public Node(String name, int port, int n_player) throws IOException {
         super();
@@ -118,11 +106,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
     public void registerToGame(boolean server,String address) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException {
         String rAddress;
 
-        /*if(server)
-            rAddress = "127.0.0.1";
-        else
-            rAddress = address;*/
-
         Registry register = LocateRegistry.getRegistry(address,1234);//(regPort);
         this.registry = register;
         RegistrationRemote r_reg =  (RegistrationRemote) this.registry.lookup("Reg");
@@ -142,7 +125,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
 
     @Override
     public void broadcast(Message msg) throws NotBoundException {
-        System.out.println(msg.uuid+" Sta facendo Broadcast");
+        //System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
 
@@ -198,7 +181,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
 
     public void receive(Object msg) throws RemoteException {
         int i = 1;
-        //System.out.println(msg.toString());
     }
 
     /**
@@ -238,9 +220,5 @@ public class Node extends UnicastRemoteObject implements NodeRemote,Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }
 

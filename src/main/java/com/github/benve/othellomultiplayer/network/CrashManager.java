@@ -41,7 +41,7 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         this.registry.bind("CrashManager",this);
     }
 
-    public void stopTimerContreller() {
+    public void stopTimerController() {
         timer.cancel();
 
         timer = null;
@@ -57,12 +57,12 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
                         public void run() {
                             try {
                                 ping();
-                                System.err.println("\t" + this.toString() + "________" + this.scheduledExecutionTime());
+                                //System.err.println("\t" + this.toString() + "________" + this.scheduledExecutionTime());
                             } catch (NotBoundException e) {
 
                             }
                         }
-                    }, 1000, 5000);//Secondi ogni quanto fa il controllo del crash
+                    }, 500, 500);//Secondi ogni quanto fa il controllo del crash
         } else {
             System.out.println("TimerController già acceso! ");
         }
@@ -76,7 +76,7 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
         try{
             getNext().pong();
         } catch (RemoteException e) {
-            this.stopTimerContreller();
+            this.stopTimerController();
 
             int delIndex = allPlayer.getPosition(allPlayer.getNext(me));
 
@@ -129,7 +129,6 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
     }
 
     public boolean pong() throws RemoteException {
-        //System.out.println(this.allPlayer.toString());
         return true;
     }
 
