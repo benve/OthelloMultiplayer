@@ -126,7 +126,11 @@ public class Gui extends PApplet {
                 Player player = pls.get(board.currP);
 
                 currC = player.c;
-                msg = "Turno del Giocatore: " + player.getName();
+                if (player.getUuid() == node.me.getUuid()) {
+                    msg = "Tocca a Te!";
+                }else {
+                    msg = "Turno del Giocatore: " + player.getName() + ".";
+                }
 
                 if (logic.hasReversi(board, player.getUuid())) {
                     reversi = logic.getAllReversi(board, player.getUuid());
