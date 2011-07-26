@@ -60,7 +60,7 @@ public class Gui extends PApplet {
     int lato = H / bSize;
 
     //Messaggio log in Gui
-    String msg = "messaggio di log";
+    String msg = "Benvenuto in Empire!";
 
     PFont bigFont, smallFont;
 
