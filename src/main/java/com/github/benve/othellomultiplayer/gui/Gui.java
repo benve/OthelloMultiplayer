@@ -360,59 +360,74 @@ public class Gui extends PApplet {
 
     // function buttonOK will be triggered when pressing
 // the OK button of the messageBox.
-    void buttonOK(int theValue) throws IOException, InterruptedException {
+    void buttonOK(int theValue) {
         println("a button event from button OK.");
-        String pname = ((Textfield) controlP5.controller("name")).getText();
+
         messageBoxResult = theValue;
 
-        try {
-            if (((Toggle)controlP5.controller("new_game")).getState()) {//Server registrazione
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    String pname = ((Textfield) controlP5.controller("name")).getText();
+                    if (((Toggle) controlP5.controller("new_game")).getState()) {//Server registrazione
 
-                node = new Node(pname, 1234, players);
+                        node = new Node(pname, 1234, players);
 
-                node.initializeNode(true);
+                        node.initializeNode(true);
 
-                node.registerToGame(true, NetUtils.getInstance().getHostAddress());//"127.0.0.1");
-            } else {
-                //int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
-                String p = (((Textfield)controlP5.controller("registration_service")).getText());
-                node = new Node(pname);
+                        node.registerToGame(true, NetUtils.getInstance().getHostAddress());//"127.0.0.1");
+                    } else {
+                        //int p = Integer.parseInt(((Textfield)controlP5.controller("registration_service")).getText());
+                        String p = (((Textfield) controlP5.controller("registration_service")).getText());
+                        node = new Node(pname);
 
-                node.initializeNode(false);
+                        node.initializeNode(false);
 
-                node.registerToGame(false, p);
+                        node.registerToGame(false, p);
+                    }
+
+                    if (node.allPlayer.getPosition(node.me) == 0) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                        node.startGame();
+                        //node.actionToken(node.me.getUuid());
+                    }
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (AlreadyBoundException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                } catch (MaxPlayerException e) {
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        };
 
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (AlreadyBoundException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (MaxPlayerException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
+        new Thread(runnable).start();
 
         messageBox.hide();
-
-        if (node.allPlayer.getPosition(node.me) == 0) {
-            Thread.sleep(2000);
-            node.startGame();
-            //node.actionToken(node.me.getUuid());
-        }
-
+        msg = "In attesa di collegamento...";
     }
 
-    public void keyPressed() {
+    /*public void keyPressed() {
         if (key == CODED) {
             println(keyCode);
         } else {
                 switch (key) {
+                    case 's':
+                        buttonOK(1);
+                        break;
                     case 'n':
                         board.currP = (board.currP + 1) % players;
                         break;
@@ -427,7 +442,7 @@ public class Gui extends PApplet {
                         break;
                 }
         }
-    }
+    }*/
 
 
     // function buttonCancel will be triggered when pressing
