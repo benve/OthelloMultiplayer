@@ -52,7 +52,7 @@ public class Gui extends PApplet {
     //Cornice intorno al campo di gioco
     int state = 40;
 
-    int H = 400;
+    int H = 500;
 
      //lato in caselle della scacchiera
     int bSize = 10;
