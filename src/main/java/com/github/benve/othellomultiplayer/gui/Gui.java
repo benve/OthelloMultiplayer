@@ -121,10 +121,16 @@ public class Gui extends PApplet {
 
                 Player player = pls.get(board.currP);
 
+                currC = player.c;
+                msg = "Turno del Giocatore: " + player.getName();
+
                 if (logic.hasReversi(board, player.getUuid())) {
                     reversi = logic.getAllReversi(board, player.getUuid());
                 } else if (logic.hasColonize(board, player.getUuid())) {
                     colonize = logic.getAllColonize(board, player.getUuid());
+                } else {
+                    winner = logic.getWinner(board);
+                    if (winner != -1) msg = "";//tolgo messaggio stato
                 }
 
                 //Disegno pedine
@@ -174,12 +180,8 @@ public class Gui extends PApplet {
                     board.currP = (board.currP + 1) % pls.size();
                     println("Non ho mosse possibili, next Giocatore: " + board.currP);
                     node.sendToken(board.currP);
-                    //TODO:Se non ci sono mosse possibili forse qualcuno ha vinto :(
-                    //if (winner == -1)
-                    //    winner = logic.getWinner(board);
                 }
-                currC = player.c;
-                msg = "Turno del Giocatore: " + player.getName();
+
             } else {//Iniziallizzazione Board
                 if (node != null && node.b != null) {
                     board = node.b;
@@ -230,8 +232,6 @@ public class Gui extends PApplet {
                 board.currP = (board.currP + 1) % pls.size();
                 node.sendToken(board.currP);
             } //else println("Mossa non consentita");
-
-            winner = logic.getWinner(board);
 
         }
     }
