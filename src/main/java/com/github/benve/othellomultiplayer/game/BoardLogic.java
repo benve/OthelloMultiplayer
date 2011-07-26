@@ -399,6 +399,10 @@ public class BoardLogic {
     public int getWinner(Board b) {
         HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
 
+        if(PlayerList.getInstance().size() == 1){
+            return PlayerList.getInstance().get(0).getUuid();
+        }
+
         for(int r=0;r<b.getRow();r++) {
             for(int c=0;c<b.getColumn();c++) {
                 int p = b.getStatus(r,c);

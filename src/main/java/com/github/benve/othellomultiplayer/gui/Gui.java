@@ -52,10 +52,10 @@ public class Gui extends PApplet {
     //Cornice intorno al campo di gioco
     int state = 40;
 
-    int H = 500;
+    int H = 490; //Da adattare in base alla griglia: 490 è buono per la board 7x7
 
      //lato in caselle della scacchiera
-    int bSize = 10;
+    int bSize = 7;
     //Lato in pixel della casella
     int lato = H / bSize;
 
@@ -136,10 +136,10 @@ public class Gui extends PApplet {
                     reversi = logic.getAllReversi(board, player.getUuid());
                 } else if (logic.hasColonize(board, player.getUuid())) {
                     colonize = logic.getAllColonize(board, player.getUuid());
-                } else {
-                    winner = logic.getWinner(board);
-                    if (winner != -1) msg = "";//tolgo messaggio stato
                 }
+
+                winner = logic.getWinner(board);
+                if (winner != -1) msg = "";
 
                 //Disegno pedine
                 textFont(bigFont);
