@@ -148,16 +148,16 @@ public class Gui extends PApplet {
                                     stroke(colors[player.c]);
                                     noFill();
                                     ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
-                                    //Label
+                                    /*Label
                                     fill(colors[player.c]);
-                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);*/
                                 } else if (colonize != null && colonize[j][i]) {//Casella che posso colonizzare
                                     stroke(colors[player.c]);
                                     noFill();
                                     rect((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
-                                    //Label
+                                    /*Label
                                     fill(colors[player.c]);
-                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                                    text(board.currP, (i * lato) + lato / 2, (j * lato) + lato / 2);*/
                                 }
                             }
                         } else {//Cassella con una pedina
@@ -174,9 +174,9 @@ public class Gui extends PApplet {
                             noStroke();
                             ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
 
-                            //label player
+                            /*label player
                             fill(0);
-                            text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                            text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);*/
                         }
                     }
                 }
@@ -201,6 +201,11 @@ public class Gui extends PApplet {
         else
             fill(255);
         textFont(smallFont);
+        //Solo effetto grafico
+        if(msg.endsWith(".") && (frameCount % 2 != 0)) {
+            msg = msg + ".";
+            if (msg.endsWith("........")) msg = msg.substring(0,msg.length()-7);
+        }
         text(msg, 10, H + 20);
     }
 
@@ -294,6 +299,7 @@ public class Gui extends PApplet {
         Textfield port = controlP5.addTextfield("registration_service", 20, 120, 260, 20);
         port.moveTo(messageBox);
         port.captionLabel().set("address of registration service");
+        port.setText("127.0.0.1");
         port.setColorForeground(color(20));
         port.setColorBackground(color(20));
         port.setColorActive(color(100));

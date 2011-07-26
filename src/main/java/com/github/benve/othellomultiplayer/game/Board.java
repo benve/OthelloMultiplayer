@@ -24,7 +24,7 @@ public class Board implements Serializable {
     }
     
     public Board(){
-        side = 4;
+        side = 7;
         board = new int[side][side];
 
         for(int i=0;i<side;i++)
