@@ -23,7 +23,7 @@ public class Player implements Serializable{
     /**
      * Colore
      */
-    public int c = (int) (Math.random() * 10);
+    public int c;//= (int) (Math.random() * 10);
 
     /**
      * Porta sulla quale il giocatore sta in ascolto

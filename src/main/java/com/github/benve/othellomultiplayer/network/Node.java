@@ -118,6 +118,8 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
 
         maxplayer = this.allPlayer.size();
 
+
+
         cm = new CrashManager(this.me);
         cm.initializeCrashManager();
         cm.startTimedController();

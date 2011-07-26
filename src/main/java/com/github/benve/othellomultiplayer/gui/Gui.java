@@ -35,6 +35,8 @@ public class Gui extends PApplet {
             0xffBFB3FF
     };
 
+    int currC = -1;
+
     ControlP5 controlP5;
 
     final BoardLogic logic = BoardLogic.getInstance();
@@ -176,18 +178,22 @@ public class Gui extends PApplet {
                     //if (winner == -1)
                     //    winner = logic.getWinner(board);
                 }
-
+                currC = player.c;
                 msg = "Turno del Giocatore: " + player.getName();
             } else {//Iniziallizzazione Board
                 if (node != null && node.b != null) {
                     board = node.b;
                     pls = node.allPlayer;
+                    pls.setColorsByPosition();
                     bSize = board.side;
                     lato = H / bSize;
                 }
             }
         }
-        fill(255);
+        if(currC != -1)
+            fill(colors[currC]);
+        else
+            fill(255);
         textFont(smallFont);
         text(msg, 10, H + 20);
     }

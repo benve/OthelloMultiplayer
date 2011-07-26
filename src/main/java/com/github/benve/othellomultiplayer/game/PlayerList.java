@@ -77,4 +77,13 @@ public class PlayerList extends LinkedList<Player> implements List<Player>, Seri
         this.remove(position);
     }
 
+    public void setColorsByPosition(){
+        Player p;
+        for(int i=0;i<players.size();i++){
+            p = players.get(i);
+            p.c = i;
+        }
+
+    }
+
 }
