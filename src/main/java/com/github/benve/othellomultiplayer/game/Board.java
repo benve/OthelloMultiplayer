@@ -43,7 +43,6 @@ public class Board implements Serializable {
     public void initRandomBoard(PlayerList playerList) {
            //Aggiungo giocatori dandogli pedine casuali
         for (int i = 0; i < playerList.size(); i++) {
-            for (int j = 0; j < (5 - playerList.size()); j++) {
                 int x = (int) (Math.random()*(side - 1));
                 int y = (int) (Math.random()*(side - 1));
                 while (board[x][y] != -1) {
@@ -51,7 +50,6 @@ public class Board implements Serializable {
                     y = (int) (Math.random()*(side - 1));
                 }
                 board[x][y] = playerList.get(i).getUuid();
-            }
         }
     }
     

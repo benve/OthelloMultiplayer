@@ -93,7 +93,11 @@ public class Gui extends PApplet {
         fill(200);
 
 
-        if (winner > -1) {
+        if (winner == -2) {
+            fill(color(255));
+            String ws = "Draw!!";
+            text(ws, (H - textWidth(ws)) / 2, width / 4);
+        } else if (winner > -1) {
             fill(colors[pls.getByUUID(winner).c]);
             String ws = "The Winner is \n" + pls.getByUUID(winner).getName() + " !!";
             text(ws, (H - textWidth(ws)) / 2, width / 4);
