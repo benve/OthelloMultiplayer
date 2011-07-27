@@ -22,17 +22,17 @@ import java.rmi.RemoteException;
 public class Gui extends PApplet {
 
     int[] colors = new int[]{
-            0xff722640,
             0xffE46501,
             0xff40337F,
-            0xffE434FE,
             0xffF1A6BF,
             0xff0E5940,
             0xff1BCB01,
             0xffBFCC80,
             0xff1B9AFE,
             0xff8DD9BF,
-            0xffBFB3FF
+            0xffE434FE,
+            0xffBFB3FF,
+            0xff722640
     };
 
     int currC = -1;
@@ -191,9 +191,12 @@ public class Gui extends PApplet {
                             noStroke();
                             ellipse((i * lato) + 5, (j * lato) + 5, lato - 10, lato - 10);
 
-                            /*label player
-                            fill(0);
-                            text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);*/
+                            ///label player
+                            if (owner == null) {
+                                fill(0);
+                                text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                            }
+
                         }
                     }
                 }
