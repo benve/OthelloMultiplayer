@@ -42,10 +42,13 @@ public class CrashManager extends UnicastRemoteObject implements CrashManagerRem
     }
 
     public void stopTimerController() {
-        timer.cancel();
+        try{
+            timer.cancel();
+            timer = null;
+            System.gc();
+        }catch(Throwable e){
 
-        timer = null;
-        System.gc();
+        }
     }
 
     public void startTimedController() {

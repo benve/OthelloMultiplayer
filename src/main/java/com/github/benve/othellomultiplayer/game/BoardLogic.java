@@ -1,6 +1,10 @@
 package com.github.benve.othellomultiplayer.game;
 
+import com.github.benve.othellomultiplayer.network.MaxPlayerException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -435,11 +439,57 @@ public class BoardLogic {
     }
 
 
+    public int[] getdraw(Board b) {
+        HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
+
+        PlayerList plist = PlayerList.getInstance();
+        int[] drawPlayer = new int[plist.size()];
+
+        if(PlayerList.getInstance().size() == 1){
+            return null;
+        }
+
+        for(int r=0;r<b.getRow();r++) {
+            for(int c=0;c<b.getColumn();c++) {
+                int p = b.getStatus(r,c);
+                if (p != -1){
+                    Integer ra = count.get(p);
+                    if (ra == null)
+                        ra = 0;
+                    ra = ra + 1;
+                    count.put(b.getStatus(r,c), ra);
+                }
+            }
+        }
+
+
+
+        int max = 0;
+        int nd = 0;
+
+        for (Map.Entry<Integer, Integer> en : count.entrySet()) {
+            if (en.getValue() > max) {
+                max = en.getValue();
+            }
+
+        }
+
+        for(int i=0;i<plist.size();i++){
+            if(max == count.get(plist.get(i).getUuid())){
+                drawPlayer[nd] = plist.get(i).getUuid();
+                nd++;
+            }
+        }
+
+        return drawPlayer;
+    }
+
+
     /*
     Si effettua una valutazione cortocircuitata dell'or sulla matrice in modo tale che alla prima
     occorrenza di un true la funzione possa terminare la valutazione
      */
-    private boolean orMatrice(int height, int width, boolean[][] mossa){
+    public boolean orMatrice(int height, int width, boolean[][] mossa){
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++)
                 if(mossa[i][j])

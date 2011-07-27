@@ -94,14 +94,25 @@ public class Gui extends PApplet {
 
 
         if (winner == -2) {
+            int[] drawPlayers = logic.getdraw(board);
             fill(color(255));
-            String ws = "Draw!!";
+            String ws = "Draw between\n";
             text(ws, (H - textWidth(ws)) / 2, width / 4);
+
+            for(int i=0;i<drawPlayers.length;i++){
+                ws = pls.getByUUID(drawPlayers[i]).getName();
+                fill(colors[pls.getByUUID(drawPlayers[i]).c]);
+                text(ws, (((H - textWidth(ws))) / 2), (width / 4)+(20*(i+1)));
+            }
+
+            node.endGame();
+
         } else if (winner > -1) {
             fill(colors[pls.getByUUID(winner).c]);
             String ws = "The Winner is \n" + pls.getByUUID(winner).getName() + " !!";
             text(ws, (H - textWidth(ws)) / 2, width / 4);
 
+            node.endGame();
         } else {
 
             //Disegno righe
@@ -224,7 +235,32 @@ public class Gui extends PApplet {
             flush();
 
             boolean[][] allr = logic.getSingleReversi(board, ny, nx, node.me.getUuid());
-            if (allr[ny][nx]) {
+            if(logic.hasReversi(board,node.me.getUuid())){
+                if (allr[ny][nx]) {
+                    for (int r = 0; r < allr.length; r++) {
+                        println();
+                        for (int c = 0; c < allr[r].length; c++) {
+                            print((allr[r][c] ? "T" : "_") + "\t");
+                            if (allr[r][c]) {
+                                board.setStatus(r, c, node.me.getUuid());
+                                node.sendMove(r,c,node.me.getUuid());
+                            }
+                        }
+                    }
+                    println();
+                    board.currP = (board.currP + 1) % pls.size();
+                    node.sendToken(board.currP);
+                }
+            }else if(logic.hasColonize(board,node.me.getUuid())){
+                    if (logic.canColonize(board, ny, nx, node.me.getUuid())) {
+                        board.setStatus(ny, nx, node.me.getUuid());
+                        node.sendMove(ny,nx,node.me.getUuid());
+                        board.currP = (board.currP + 1) % pls.size();
+                        node.sendToken(board.currP);
+                    }
+
+            }
+            /*if (allr[ny][nx]) {
                 for (int r = 0; r < allr.length; r++) {
                     println();
                     for (int c = 0; c < allr[r].length; c++) {
@@ -246,6 +282,10 @@ public class Gui extends PApplet {
                 node.sendToken(board.currP);
             } //else println("Mossa non consentita");
 
+            N.B. Questa gestione errata si cancella solo immediatamente prima della consegna
+            perchè è comodissima per creare situazioni di gioco particolari!!!!!
+
+            */
         }
     }
 

@@ -57,7 +57,7 @@ import java.util.Enumeration;
          */
         public String getHostAddress() throws UnknownHostException, SocketException {
             NetworkInterface iface;
-            iface = NetworkInterface.getByName("wlan0");
+            iface = NetworkInterface.getByName("eth0");
             for(Enumeration<InetAddress> addresses = iface.getInetAddresses(); addresses.hasMoreElements();){
                 InetAddress address = addresses.nextElement();
                 if(address instanceof Inet4Address)

@@ -222,5 +222,9 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         }
     }
 
+    public void endGame(){
+        cm.stopTimerController();
+    }
+
 }
 
