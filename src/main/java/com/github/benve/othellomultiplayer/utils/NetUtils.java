@@ -1,14 +1,6 @@
 package com.github.benve.othellomultiplayer.utils;
 
-import com.github.benve.othellomultiplayer.game.Player;
-import com.github.benve.othellomultiplayer.game.PlayerList;
-import com.github.benve.othellomultiplayer.network.NodeRemote;
-
 import java.net.*;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Enumeration;
 
 /**
@@ -56,12 +48,17 @@ import java.util.Enumeration;
          * @throws UnknownHostException
          */
         public String getHostAddress() throws UnknownHostException, SocketException {
-            NetworkInterface iface;
-            iface = NetworkInterface.getByName("eth0");
-            for(Enumeration<InetAddress> addresses = iface.getInetAddresses(); addresses.hasMoreElements();){
-                InetAddress address = addresses.nextElement();
-                if(address instanceof Inet4Address)
-                    return address.getHostAddress();
+
+
+            for(Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces(); ni.hasMoreElements();) {
+                NetworkInterface iface = ni.nextElement();
+                if (iface.getName() != "lo") {
+                    for(Enumeration<InetAddress> addresses = iface.getInetAddresses(); addresses.hasMoreElements();){
+                        InetAddress address = addresses.nextElement();
+                        if(address instanceof Inet4Address)
+                            return address.getHostAddress();
+                    }
+                }
             }
 
             return null;

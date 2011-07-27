@@ -83,6 +83,8 @@ public class Gui extends PApplet {
         controlP5.disableShortcuts();
         controlP5.setAutoDraw(true);
         createMessageBox();
+
+        this.frame.setTitle("Empire");
     }
 
     public void draw() {
@@ -138,9 +140,9 @@ public class Gui extends PApplet {
 
                 currC = player.c;
                 if (player.getUuid() == node.me.getUuid()) {
-                    msg = "Tocca a Te!";
+                    msg = "Gioca";
                 }else {
-                    msg = "Turno del Giocatore: " + player.getName() + ".";
+                    msg = "Attendi mossa del giocatore: " + player.getName()+".";
                 }
 
                 if (logic.hasReversi(board, player.getUuid())) {
@@ -208,6 +210,7 @@ public class Gui extends PApplet {
                     pls.setColorsByPosition();
                     bSize = board.side;
                     lato = H / bSize;
+                    this.frame.setTitle("Empire: "+node.me.getName());
                 }
             }
         }
