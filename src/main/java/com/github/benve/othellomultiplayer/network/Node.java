@@ -87,8 +87,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         if(server)
             this.setRegister();
 
-        //Thread.currentThread().setDaemon(true);
-
     }
 
     private void setRegister() throws RemoteException, AlreadyBoundException, UnknownHostException, SocketException {
@@ -130,16 +128,12 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         //System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
-
-                if (msg.content instanceof String) //Debug
-                    System.out.println(msg.content.toString());
-
                 if (msg.content instanceof Board) {//StartGame
                     this.b = (Board) msg.content;
                 } else if (msg.content instanceof int[]) {//mangio pedina
                     int[] m = (int[]) msg.content;
                     b.setStatus(m[0], m[1], m[2]);
-                } if (msg.content instanceof Integer) {//mangio pedina
+                } if (msg.content instanceof Integer) {//passaggio del token
                     int m = (Integer) msg.content;
                     b.currP = m;
                 }
@@ -170,19 +164,6 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
         NodeRemote rem = (NodeRemote) register.lookup("Node");
 
         return rem;
-    }
-
-    public void sendNext(Object msg) throws NotBoundException {
-        try{
-            getNext().receive(msg);
-        } catch (RemoteException e) {
-                cm.repairAndBroadcastPlayerList();
-                this.sendNext(msg);
-        }
-    }
-
-    public void receive(Object msg) throws RemoteException {
-        int i = 1;
     }
 
     /**

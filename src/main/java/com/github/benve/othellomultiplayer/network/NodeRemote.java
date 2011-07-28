@@ -23,5 +23,4 @@ public interface NodeRemote extends Remote {
 
     public void broadcast(Message msg) throws RemoteException, NotBoundException;
 
-    public void receive(Object msg) throws RemoteException;
 }

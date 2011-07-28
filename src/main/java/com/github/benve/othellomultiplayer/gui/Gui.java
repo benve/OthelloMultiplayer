@@ -60,7 +60,7 @@ public class Gui extends PApplet {
     int lato = H / bSize;
 
     //Messaggio log in Gui
-    String msg = "Benvenuto in Empire!";
+    String msg = "Benvenuto in Almost-Othello!!";
 
     PFont bigFont, smallFont;
 
@@ -84,7 +84,7 @@ public class Gui extends PApplet {
         controlP5.setAutoDraw(true);
         createMessageBox();
 
-        this.frame.setTitle("Empire");
+        this.frame.setTitle("Almost-Othello!");
     }
 
     public void draw() {
@@ -182,7 +182,7 @@ public class Gui extends PApplet {
                             String text = "";
                             if (owner == null) {
                                 fill(200);
-                                text = "X";//non stampa il teschietto: provare a cambiare il font
+                                text = "_";//non stampa il teschietto: provare a cambiare il font
                             } else {
                                 fill(colors[owner.c]);
                                 text = "" + board.currP;
@@ -194,7 +194,7 @@ public class Gui extends PApplet {
                             ///label player
                             if (owner == null) {
                                 fill(0);
-                                text(text, (i * lato) + lato / 2, (j * lato) + lato / 2);
+                                text(text, (i * lato) + lato / 3, (j * lato) + lato / 2);
                             }
 
                         }
@@ -213,7 +213,7 @@ public class Gui extends PApplet {
                     pls.setColorsByPosition();
                     bSize = board.side;
                     lato = H / bSize;
-                    this.frame.setTitle("Empire: "+node.me.getName());
+                    this.frame.setTitle("Almost-Othello!: "+node.me.getName());
                 }
             }
         }
