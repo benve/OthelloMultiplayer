@@ -402,10 +402,18 @@ public class BoardLogic {
      */
     public int getWinner(Board b) {
         HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
+        int winner = -1;
 
         if(PlayerList.getInstance().size() == 1){
             return PlayerList.getInstance().get(0).getUuid();
         }
+
+        winner = getWinnerWithHiddenPlayers(b);
+
+        if(winner > 0)
+            return winner;
+        else
+            winner = -1;
 
         for(int r=0;r<b.getRow();r++) {
             for(int c=0;c<b.getColumn();c++) {
@@ -420,7 +428,7 @@ public class BoardLogic {
         }
 
         int max = 0;
-        int winner = -1;
+
         for (Map.Entry<Integer, Integer> en : count.entrySet()) {
             if (en.getValue() > max) {
                 max = en.getValue();
@@ -435,6 +443,65 @@ public class BoardLogic {
             if (nw >= 2) return -2;
         }
 
+        return winner;
+    }
+
+
+    private int getWinnerWithHiddenPlayers(Board b){
+        int winner =-1;
+        HashMap<Integer, Integer> count = new HashMap<Integer, Integer>();
+        Boolean freeField = false;
+        PlayerList pls = PlayerList.getInstance();
+        int nz = 0;
+
+
+        for(int r=0;r<b.getRow();r++) {
+            for(int c=0;c<b.getColumn();c++) {
+                int p = b.getStatus(r,c);
+                if (p == -1){
+                    freeField = true;
+                    break;
+                }
+            }
+        }
+
+        if (freeField){
+            for(int i = 0; i<pls.size();i++)
+                count.put(pls.get(i).getUuid(),0);
+
+
+            for(int r=0;r<b.getRow();r++) {
+                for(int c=0;c<b.getColumn();c++) {
+                    int p = b.getStatus(r,c);
+                    if (p != -1) {
+                        Integer ra = count.get(p);
+                        if (ra == null)
+                            ra = 0;
+                        ra = ra + 1;
+                        count.put(b.getStatus(r,c), ra);
+                    }
+                }
+            }
+
+            for(int i=0;i<pls.size();i++){
+                if(count.get(pls.get(i).getUuid()) == 0)
+                    nz++;
+            }
+
+            if(nz == pls.size()-1){
+                int max = 0;
+
+                //for (Map.Entry<Integer, Integer> en : count.entrySet()) {
+                for(int i = 0;i<pls.size();i++){
+                    if (count.get(pls.get(i).getUuid()) > max) {
+                        max = count.get(pls.get(i).getUuid());
+                        winner = pls.get(i).getUuid();
+                    }
+
+                }
+            }
+
+        }
         return winner;
     }
 
