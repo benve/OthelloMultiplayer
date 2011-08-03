@@ -100,15 +100,15 @@ di G.
 \end_layout
 
 \begin_layout Standard
-Questo documento e' la relazione del progetto ed e' composto sostanzialmente
+Questo documento é la relazione del progetto ed é composto sostanzialmente
  da tre parti: introduzione al gioco e spiegazione dettagliata delle regole,
  scelte effettuate in fase di progettazione - p.e.
  stato dei giocatori, informazioni condivise, gestione dei guasti - e strategie
  implementative - strutturazione delle classi e librerie utilizzate.
  A queste se ne aggiunge una dedicata a class e sequence diagram UML.
- Il gioco che e' stato scelto e' la versione multiplayer dell'antico Reversi
+ Il gioco che é stato scelto é la versione multiplayer dell'antico Reversi
  (gioco per due giocatori), leggermente riadattato per rendere quanto possibile
- paritaria la coesistenza di piu' di due giocatori.
+ paritaria la coesistenza di più di due giocatori.
 \end_layout
 
 \begin_layout Standard
@@ -159,21 +159,21 @@ Si vuole sviluppare multiplayer distribuito con
 status open
 
 \begin_layout Plain Layout
-Tale definizione e' quella riconosciuta all'interno del regolamento ufficiale
+Tale definizione é quella riconosciuta all'interno del regolamento ufficiale
  del gioco
 \end_layout
 
 \end_inset
 
 .
- Riguardo alle specifiche imposte il sistema tollerera' 
+ Riguardo alle specifiche imposte il sistema tollererà 
 \begin_inset Formula $N-1$
 \end_inset
 
- guasti di tipo crash, si potra' contare su canali di comunicazine affidabili,
- e verra' utilizzato RMI, e non i socket, per la comunicazione fra i nodi.
- L'unica componente centralizzata sara' la registrazione iniziale al gioco,
- che a partita iniziata non sara' piu' necessaria.
+ guasti di tipo crash, si potrà contare su canali di comunicazine affidabili,
+ e verrà utilizzato RMI, e non i socket, per la comunicazione fra i nodi.
+ L'unica componente centralizzata sarà la registrazione iniziale al gioco,
+ che a partita iniziata non sarà più necessaria.
 \end_layout
 
 \begin_layout Subsection*
@@ -182,13 +182,13 @@ Tale definizione e' quella riconosciuta all'interno del regolamento ufficiale
 \end_layout
 
 \begin_layout Standard
-Come accennato in precedenza, il gioco che e' stato scelto si ispira molto
+Come accennato in precedenza, il gioco che é stato scelto si ispira molto
  a Othello, un classico per due giocatori.
 \end_layout
 
 \begin_layout Standard
-Da regolamento Othello non e' giocabile da un numero di giocatori diverso
- da due, quindi si e' deciso di modificarlo applicando il seguente pacchetto
+Da regolamento Othello non é giocabile da un numero di giocatori diverso
+ da due, quindi si é deciso di modificarlo applicando il seguente pacchetto
  di regole:
 \end_layout
 
@@ -211,8 +211,8 @@ Conquista (
 \end_inset
 
 ) consiste nel porre una pedina del proprio colore in uno degli spazi vuoti
- in modo che una o piu' pedine di uno o piu' avversari, situate perpendicolarmen
-te, orizzontalmente, e/o diagonalmente, rimangano chiuse tra quest'ultima
+ in modo che una o più pedine di uno o più avversari, situate perpendicolarmente
+, orizzontalmente, e/o diagonalmente, rimangano chiuse tra quest'ultima
  ed un'altra preesistente del proprio colore.
  Non devono essere presenti pedine vuote in mezzo al percorso 
 \end_layout
@@ -222,42 +222,42 @@ Colonizza (
 \begin_inset Formula $c_{2}$
 \end_inset
 
-) e' l'occupazione di una casella vuota adiacente a una occupata da una
- pedina del proprio colore
+) é l'occupazione di una casella vuota adiacente a una occupata da una pedina
+ del proprio colore
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Priorita' delle mosse: 
+Priorità delle mosse: 
 \begin_inset Formula $c_{1}>c_{2}$
 \end_inset
 
-: quando e' possibile fare una conquista e' obbligatorio procedere in tale
+: quando é possibile fare una conquista é obbligatorio procedere in tale
  modo.
  Se invece, come a volte si verifica nelle fasi iniziali del gioco a giocatori
  separati fra loro, i giocatori sono impossibilitati a conquistare, allora
- si puo' procedere con una mossa di colonizzazione;
+ si può procedere con una mossa di colonizzazione;
 \end_layout
 
 \begin_layout Itemize
-Il giocatore che non puo' effettuare ne' conquiste ne' colonizzazioni e'
- costretto a cedere il proprio turno di gioco;
+Il giocatore che non può effettuare né conquiste né colonizzazioni é costretto
+ a cedere il proprio turno di gioco;
 \end_layout
 
 \begin_layout Itemize
-Quando nessun giocatore potra' effettuare ulteriori mosse, il gioco si dira'
+Quando nessun giocatore potrà effettuare ulteriori mosse, il gioco si dirà
  terminato
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-Il vincitore e' colui che avra' collezionato il maggior numero di pedine
- del proprio colore
+Il vincitore é colui che avrà collezionato il maggior numero di pedine del
+ proprio colore
 \end_layout
 
 \begin_layout Itemize
 Nel caso in cui il numero maggiore di pendine veng acollezionato da due
- o piu' giocatori, allora il gioco terminera' con un pareggio
+ o più giocatori, allora il gioco terminerà con un pareggio
 \end_layout
 
 \end_deeper
@@ -272,7 +272,7 @@ In caso di
 \begin_inset Formula $N-1$
 \end_inset
 
- abbandoni il vincitore sara' il giocatore rimasto;
+ abbandoni il vincitore sarà il giocatore rimasto;
 \end_layout
 
 \begin_layout Itemize
@@ -284,8 +284,8 @@ Sono necessarie alcune precisazioni:
 \end_layout
 
 \begin_layout Itemize
-Una conquista puo' avere la conseguenza di far perdere tutte le pedine ad
- un giocatore, che sara' dichiarato sconfitto;
+Una conquista può avere la conseguenza di far perdere tutte le pedine ad
+ un giocatore, che sarà dichiarato sconfitto;
 \end_layout
 
 \begin_layout Itemize
@@ -298,7 +298,7 @@ direttamente
 \end_layout
 
 \begin_layout Itemize
-Questo insieme di regole non garantisce la fairness del gioco, poiche' la
+Questo insieme di regole non garantisce la fairness del gioco, poiché la
  disposizione iniziale random potrebbe favorire alcuni giocatori a discapito
  di altri.
 \end_layout
@@ -309,27 +309,27 @@ Questo insieme di regole non garantisce la fairness del gioco, poiche' la
 \end_layout
 
 \begin_layout Standard
-Il sistema e' stato realizzato implementando due paradigmi di comunicazione:
+Il sistema é stato realizzato implementando due paradigmi di comunicazione:
  client-server e anello unidirezionale.
 \end_layout
 
 \begin_layout Standard
-Il primo e' stato utilizzato unicamente per realizzare il servizio centralizzato
+Il primo é stato utilizzato unicamente per realizzare il servizio centralizzato
  di registrazione al gioco.
  Il secondo, invece, per realizzare le comunicazioni e il sistema di recovery
  dai guasti.
 \end_layout
 
 \begin_layout Standard
-Come detto in precedenza, la registrazione e' stata realizzata sfruttando
+Come detto in precedenza, la registrazione é stata realizzata sfruttando
  il modello client-server.
- Il server e' rappresentato dal servizio che raccoglie le richieste di partecipa
-zione e provvede alla consegna della lista ordinata dei partecipanti una
+ Il server é rappresentato dal servizio che raccoglie le richieste di partecipaz
+ione e provvede alla consegna della lista ordinata dei partecipanti una
  volta raggiunto il numero di giocatori stabilito.
  I client, di conseguenza, sono tutti coloro che intendono partecipare al
  gioco.
- Il server non e' un nodo a se stante, bensi' viene inizializzato assieme
- a una delle macchine partecipanti e il suo indirizzo dovra' quindi essere
+ Il server non é un nodo a se stante, bensì viene inizializzato assieme
+ a una delle macchine partecipanti e il suo indirizzo dovrà quindi essere
  fornito a run-time.
  
 \end_layout
@@ -337,11 +337,11 @@ zione e provvede alla consegna della lista ordinata dei partecipanti una
 \begin_layout Standard
 Successivamente a questa fase il sistema funziona secondo il modello ad
  anello unidirezionale.
- Ogni nodo, infatti, puo' comunicare solo e soltanto con il suo successore
+ Ogni nodo, infatti, può comunicare solo e soltanto con il suo successore
  nella lista e riceve messaggi esclusivamente dal suo predecessore.
  I nodi condividono uno stato globale, la othelliera, e annesse informazioni
  (caselle libere, caselle occupate, proprietari delle caselle, ecc).
- Affinche' lo stato globale sia sempre coerente, le operazioni di update
+ Affinché lo stato globale sia sempre coerente, le operazioni di update
  sono consentite solo al giocatore che possiede il token in quel momento
  - il giocatore a cui tocca effettuare la mossa.
 \begin_inset Newline newline
@@ -349,10 +349,10 @@ Successivamente a questa fase il sistema funziona secondo il modello ad
 
 Il nodo che effettua una mossa inoltra un messaggio e attende che questo
  gli venga riconsegnato.
- Questo messaggio, effettuando un giro completo dell'anello, sara' visibile
+ Questo messaggio, effettuando un giro completo dell'anello, sarà visibile
  a tutti i nodi intermedi, i quali potranno leggerne e processarne il contenuto
  al fine di mantenere coerente lo stato globale.
- Al termine del turno di gioco il nodo passera' il token al suo successore.
+ Al termine del turno di gioco il nodo passerà il token al suo successore.
 \end_layout
 
 \begin_layout Standard
@@ -382,13 +382,13 @@ Affinchè i nodi possano comunicare seguendo tale paradigma, è necessario
 \end_layout
 
 \begin_layout Standard
-PlayerList rappresenta la lista ordinata dei giocatori, ed e' il frutto
- della fase di registrazione.
+PlayerList rappresenta la lista ordinata dei giocatori, ed é il frutto della
+ fase di registrazione.
  Al suo interno sono presenti un numero variabile di oggetti di tipo Player.
- Ogni oggetto Player rappresenta la carta d'identita' del singolo nodo,
- poiche' al suo interno sono presenti tutti i dati che lo rappresentano.
+ Ogni oggetto Player rappresenta la carta d'identità del singolo nodo, poiché
+ al suo interno sono presenti tutti i dati che lo rappresentano.
  Infatti abbiamo informazioni presentazionali come il nome, di comunicazione
- come l'indirizzo IP e la porta, nonche' uno UUID per la sua identificazione
+ come l'indirizzo IP e la porta, nonché uno UUID per la sua identificazione
  univoca.
  All'interno di PlayerList, realizzata come estensione della classe LinkedList,
  sono presenti un numero considerevole di metodi di ricerca/aggiornamento
@@ -412,21 +412,21 @@ Cambiamento stato gioco.
 
 \begin_layout Standard
 Prima di introdurre le classi e i metodi che si occupano delle comunicazioni
- inerenti al cambimento dello stato di gioco e' necessario effettuare una
+ inerenti al cambimento dello stato di gioco é necessario effettuare una
  breve introduzione su altre classi le quali hanno il compito di garantire
- la corretta operabilita' funzionale del sistema (anche dal punto di vista
+ la corretta operabilità funzionale del sistema (anche dal punto di vista
  del regolamento).
- La prima di questa classi e' Othello: come si evince dal nome questa classe
+ La prima di questa classi é Othello: come si evince dal nome questa classe
  è fondamentale perchè si occupa della gestione della grafica, esegue il
  controllo di flusso, ossia quell'insieme di operazioni che consente di
- stabilire quando il giocatore puo' effetuare le proprie mosse, la verifica
+ stabilire quando il giocatore può effetuare le proprie mosse, la verifica
  delle condizioni di fine gioco e la modifica dello stato (ossia la modifica
  dell'oggetto singleton Board) secondo le regole del gioco.
  Tali regole sono state separate dalla Board e sono state implementate nella
  classe BoardLogic in ossequio al principio di separazione della politica
  dai meccanismi che garantisce la giusta separazione fra la logica del gioco
  e lo stato condiviso.
- Al termine di tale processo all'interno di Othello verra' prima invocata
+ Al termine di tale processo all'interno di Othello verrà prima invocata
  la notifica del cambiamento dello stato e poi l'eventuale passaggio del
  token.
 \end_layout
@@ -468,14 +468,14 @@ Comunicazione: Questo task viene svolto principalmente dal metodo broadcast()
 \begin_layout Standard
 Quanto descritto fin'ora non è sufficiente a completare il progetto poichè
  le specifiche impongono la gestione dei guasti di tipo crash.
- Di cio' si occupa la classe CrashManager.
- Questa classe e' stata pensata per potersi accorgere di un guasto in due
+ Di ciò si occupa la classe CrashManager.
+ Questa classe é stata pensata per potersi accorgere di un guasto in due
  differenti contesti operativi.
- Quello piu' scontato e triviale e' la rilevazione di tale tipologia di
- guasti in seguito alla cattura di una RemoteException in tutti i metodi
- della classe Node deputati alla comunicazione: verrà dunque catturato un
- errore di comunicazione con il nodo succcessivo.
- In tali metodi e' stata sempre utilizzata le seguente struttura:
+ Quello più scontato e triviale é la rilevazione di tale tipologia di guasti
+ in seguito alla cattura di una RemoteException in tutti i metodi della
+ classe Node deputati alla comunicazione: verrà dunque catturato un errore
+ di comunicazione con il nodo succcessivo.
+ In tali metodi é stata sempre utilizzata le seguente struttura:
 \end_layout
 
 \begin_layout Standard
@@ -546,29 +546,29 @@ Comunica l'identificativo del giocatore rimosso a tutti gli altri nodi attivi
 
 \begin_layout Standard
 In questo modo abbiamo la garanzia che tutti i nodi condivideranno lo stesso
- nuovo anello di comunicazione poiche' ogni nodo alla ricezione di tale
- identificatore provvedera' alla rimozione dell'annesso nodo dalla PlayerList.
+ nuovo anello di comunicazione poiché ogni nodo alla ricezione di tale identific
+atore provvederà alla rimozione dell'annesso nodo dalla PlayerList.
  Al termine di tale operazione la direttiva desiderata viene reinvocata
- ricorsivamente in modo tale da poter garantire la corretta operabilita'
+ ricorsivamente in modo tale da poter garantire la corretta operabilità
  del sistema anche nel caso in cui il nuovo successore vada in crash.
 \end_layout
 
 \begin_layout Standard
-Tuttavia tale strategia non e' sufficiente a garantire una gestione completa
- dei crash poiche' non consente in nessun modo di poter gestire un caso
- reale molto semplice: il regolamento del gioco non da' nessun limite temporale
+Tuttavia tale strategia non é sufficiente a garantire una gestione completa
+ dei crash poiché non consente in nessun modo di poter gestire un caso reale
+ molto semplice: il regolamento del gioco non dà nessun limite temporale
  al giocatore che detiene il turno.
  Questa situazione dal punto di vista implementativo significa che (usando
- solo la soluzione descritta in precedenza) e' impossibile stabilire se
- il nodo che detiene il token e' vivo pur non effettuando comunicazioni
- o se e' andato in crash.
- Per gestire tale situazione e' stato implementato il metodo ping() la cui
+ solo la soluzione descritta in precedenza) é impossibile stabilire se il
+ nodo che detiene il token é vivo pur non effettuando comunicazioni o se
+ é andato in crash.
+ Per gestire tale situazione é stato implementato il metodo ping() la cui
  esecuzione a intervalli prestabiliti è data dall'uso dell'oggetto Timer
  all'interno di startTimedController().
  Una mancata risposta al ping() implicherà una gestione dei guasti effettuata
  con lo stesso modus operandi descritto in precedenza.
  Al fine di poter rendere completa la gestione dei crash, l'uso del ping
- e' stato esteso a tutti i nodi dell'anello, indipendentemente dal fatto
+ é stato esteso a tutti i nodi dell'anello, indipendentemente dal fatto
  che questi detengano il token.
 \end_layout
 
@@ -608,7 +608,7 @@ Verificare intervallo di Timeout sull'applicazione
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename /home/lemad85/Scaricati/anello.png
+	filename anello.png
 	display false
 	scale 15
 
@@ -641,7 +641,7 @@ one.
  poichè si è resa necessaria l'adozione di un oggetto di tipo Timer per
  realizzare un ping temporizzato che potesse essere eseguito in maniera
  indipendente dal resto del sistema.
- E' opportuno sottolineare che la difficoltà riscontrata è essenzialmente
+ é opportuno sottolineare che la difficoltà riscontrata è essenzialmente
  imputabile alle scarse esperienze precedenti in termini di programmazione
  a più thread in linguaggio Java.
 \end_layout
