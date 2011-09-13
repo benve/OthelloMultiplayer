@@ -1,4 +1,4 @@
-package com.github.benve.othellomultiplayer.game;
+package almostothello.game;
 
 import org.junit.Before;
 import org.junit.Test;

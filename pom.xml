@@ -49,7 +49,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.github.benve.othellomultiplayer.gui.Gui</mainClass>
+							<mainClass>almostothello.gui.Othello</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -1,4 +1,4 @@
-package com.github.benve.othellomultiplayer.network;
+package almostothello.network;
 
 import java.io.Serializable;
 

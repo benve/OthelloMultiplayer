@@ -1,6 +1,4 @@
-package com.github.benve.othellomultiplayer.network;
-
-import com.github.benve.othellomultiplayer.game.PlayerList;
+package almostothello.network;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -21,6 +19,6 @@ public interface NodeRemote extends Remote {
 
     public void registerToGame(boolean server,String address) throws MaxPlayerException, RemoteException, NotBoundException, AlreadyBoundException;
 
-    public void broadcast(Message msg) throws RemoteException, NotBoundException;
+    public void send(Message msg) throws RemoteException, NotBoundException;
 
 }

@@ -1,13 +1,11 @@
-package com.github.benve.othellomultiplayer;
+package almostothello;
 
-import com.github.benve.othellomultiplayer.game.Board;
-import com.github.benve.othellomultiplayer.game.BoardLogic;
-import com.github.benve.othellomultiplayer.gui.Gui;
-import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-import com.github.benve.othellomultiplayer.network.Message;
-import com.github.benve.othellomultiplayer.network.Node;
-import com.github.benve.othellomultiplayer.utils.NetUtils;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import almostothello.game.Board;
+import almostothello.game.BoardLogic;
+import almostothello.network.MaxPlayerException;
+import almostothello.network.Message;
+import almostothello.network.Node;
+import almostothello.utils.NetUtils;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;

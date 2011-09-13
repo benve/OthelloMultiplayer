@@ -1,7 +1,6 @@
-package com.github.benve.othellomultiplayer.network;
+package almostothello.network;
 
-import com.github.benve.othellomultiplayer.game.Player;
-import com.github.benve.othellomultiplayer.game.PlayerList;
+import almostothello.game.Player;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;

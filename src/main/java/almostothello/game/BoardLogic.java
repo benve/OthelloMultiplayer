@@ -1,10 +1,6 @@
-package com.github.benve.othellomultiplayer.game;
+package almostothello.game;
 
-import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

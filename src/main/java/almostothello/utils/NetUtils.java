@@ -1,4 +1,4 @@
-package com.github.benve.othellomultiplayer.utils;
+package almostothello.utils;
 
 import java.net.*;
 import java.util.Enumeration;

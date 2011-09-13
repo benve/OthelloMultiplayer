@@ -1,13 +1,13 @@
-package com.github.benve.othellomultiplayer.game;
+package almostothello.game;
 
-import com.github.benve.othellomultiplayer.utils.NetUtils;
+import almostothello.utils.NetUtils;
 
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-//import static com.github.benve.othellomultiplayer.utils.NetUtils.getHostAddress;
+//import static almostothello.utils.NetUtils.getHostAddress;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,12 +1,12 @@
-package com.github.benve.othellomultiplayer.gui;
+package almostothello.gui;
 
-import com.github.benve.othellomultiplayer.game.Board;
-import com.github.benve.othellomultiplayer.game.BoardLogic;
-import com.github.benve.othellomultiplayer.game.Player;
-import com.github.benve.othellomultiplayer.game.PlayerList;
-import com.github.benve.othellomultiplayer.network.MaxPlayerException;
-import com.github.benve.othellomultiplayer.network.Node;
-import com.github.benve.othellomultiplayer.utils.NetUtils;
+import almostothello.game.Board;
+import almostothello.game.BoardLogic;
+import almostothello.game.Player;
+import almostothello.game.PlayerList;
+import almostothello.network.MaxPlayerException;
+import almostothello.network.Node;
+import almostothello.utils.NetUtils;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -19,7 +19,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 
-public class Gui extends PApplet {
+public class Othello extends PApplet {
 
     int[] colors = new int[]{
             0xffE46501,
@@ -59,7 +59,7 @@ public class Gui extends PApplet {
     //Lato in pixel della casella
     int lato = H / bSize;
 
-    //Messaggio log in Gui
+    //Messaggio log in Othello
     String msg = "Benvenuto in Almost-Othello!!";
 
     PFont bigFont, smallFont;
@@ -516,6 +516,6 @@ public class Gui extends PApplet {
     static Node node;
 
     static public void main(String args[]) {
-        PApplet.main(new String[]{"--bgcolor=#DFDFDF", "com.github.benve.othellomultiplayer.gui.Gui"});
+        PApplet.main(new String[]{"--bgcolor=#DFDFDF", "almostothello.gui.Othello"});
     }
 }

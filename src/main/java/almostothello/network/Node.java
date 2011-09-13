@@ -1,8 +1,8 @@
-package com.github.benve.othellomultiplayer.network;
+package almostothello.network;
 
-import com.github.benve.othellomultiplayer.game.Board;
-import com.github.benve.othellomultiplayer.game.Player;
-import com.github.benve.othellomultiplayer.game.PlayerList;
+import almostothello.game.Board;
+import almostothello.game.Player;
+import almostothello.game.PlayerList;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -124,7 +124,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     }
 
     @Override
-    public void broadcast(Message msg) throws NotBoundException {
+    public void send(Message msg) throws NotBoundException {
         //System.out.println(msg.uuid+" Sta facendo Broadcast");
         if (msg.uuid != this.me.getUuid()) {
             try {
@@ -138,10 +138,10 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
                     b.currP = m;
                 }
 
-                getNext().broadcast(msg);
+                getNext().send(msg);
             } catch (RemoteException e) {
                 cm.repairAndBroadcastPlayerList();
-                this.broadcast(msg);
+                this.send(msg);
             }
         }
     }
@@ -149,7 +149,7 @@ public class Node extends UnicastRemoteObject implements NodeRemote {
     public void startBroadcast(Message msg) throws NotBoundException {
         msg.uuid = me.getUuid();
         try {
-            this.getNext().broadcast(msg);
+            this.getNext().send(msg);
         } catch (RemoteException e) {
             cm.repairAndBroadcastPlayerList();
             this.startBroadcast(msg);

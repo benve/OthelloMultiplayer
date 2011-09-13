@@ -1,4 +1,4 @@
-package com.github.benve.othellomultiplayer.game;
+package almostothello.game;
 
 import java.io.Serializable;
 import java.util.LinkedList;
